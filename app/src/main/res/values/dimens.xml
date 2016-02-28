@@ -3,4 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="defaultpadding">16dp</dimen>
+    <dimen name="cornerradius">5dp</dimen>
+    <dimen name="stroke">3dp</dimen>
 </resources>

@@ -13,6 +13,7 @@ import io.fabric.sdk.android.Fabric;
 public class Hue extends Application {
     public static final String TAG = "HUE";
     public static String androidId;
+    public static String TOKEN;
 
     @Override
     public void onCreate() {

@@ -25,6 +25,10 @@ public class ApiBuilder {
         return ApiBuilder();
     }
 
+    public static Api getInstance() {
+        return api;
+    }
+
     private static Api ApiBuilder() {
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")

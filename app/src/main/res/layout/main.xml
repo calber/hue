@@ -10,21 +10,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="org.calber.hue.MainActivity">
 
-    <Button
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+    <android.support.design.widget.FloatingActionButton
+        android:visibility="gone"
         android:id="@+id/connect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="Connect" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:padding="@dimen/defaultpadding"
-        android:src="@drawable/fab_ic_add"
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/defaultpadding"
+        android:src="@drawable/fab_ic_add" />
 
 </android.support.design.widget.CoordinatorLayout>
