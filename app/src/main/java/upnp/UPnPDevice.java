@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.calber.hue;
+package upnp;
 
 import android.text.TextUtils;
 

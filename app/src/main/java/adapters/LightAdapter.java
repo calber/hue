@@ -1,4 +1,4 @@
-package org.calber.hue;
+package adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,10 +9,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.calber.hue.Hue;
+import org.calber.hue.R;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import api.ApiBuilder;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.Light;
@@ -35,7 +39,7 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.light, parent, false);
+        View view = inflater.inflate(R.layout.lightcard, parent, false);
         return new ViewHolder(view);
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.calber.hue;
+package upnp;
 
 import android.util.Log;
 
@@ -81,7 +81,6 @@ public class UPnPDeviceFinder {
 
                     // Listen to responses from network until the socket timeout
                     while (true) {
-                        Log.e(TAG, "wait for dev. response");
                         DatagramPacket dp = mSock.receiveMulticastMsg();
                         String receivedString = new String(dp.getData());
                         receivedString = receivedString.substring(0, dp.getLength());
@@ -89,10 +88,11 @@ public class UPnPDeviceFinder {
                         UPnPDevice device = UPnPDevice.getInstance(receivedString);
                         if (device != null) {
                             subscriber.onNext(device);
+                            if(device.getProperties().containsKey("upnp_hue-bridgeid"))
+                                mSock.close();
                         }
                     }
                 } catch (IOException e) {
-                    //sock timeout will get us out of the loop
                     Log.e(TAG, "time out");
                     mSock.close();
                     subscriber.onCompleted();

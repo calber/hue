@@ -4,6 +4,7 @@
 
 # Files for the Dalvik VM
 *.dex
+*.iml
 
 # Java class files
 *.class
@@ -11,6 +12,7 @@
 # Generated files
 bin/
 gen/
+build
 
 # Gradle files
 .gradle/
