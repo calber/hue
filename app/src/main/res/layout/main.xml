@@ -25,6 +25,7 @@
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout
+            style="@style/AppTabLayout"
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -38,15 +39,5 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:visibility="gone"
-        android:id="@+id/connect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/defaultpadding"
-        android:src="@drawable/fab_ic_add" />
 
 </android.support.design.widget.CoordinatorLayout>

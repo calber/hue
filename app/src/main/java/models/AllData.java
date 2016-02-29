@@ -16,5 +16,6 @@ public class AllData {
     @Expose
     public HashMap<String,Schedule> schedules;
 
-    @Expose Configuration config;
+    @Expose
+    public Configuration config;
 }

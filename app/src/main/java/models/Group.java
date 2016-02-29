@@ -17,5 +17,6 @@ public class Group {
     @Expose
     public String name;
 
+    public String id;
 }
 

@@ -54,7 +54,7 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(r -> {
-                    setLighButtonState(h,true, light.state.bri);
+                    setLighButtonState(h,true, 254);
                     Log.d(Hue.TAG, r.toString());
                 }, throwable -> {
                     Log.e(Hue.TAG, "", throwable);
@@ -64,7 +64,7 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(r -> {
-                    setLighButtonState(h,false, light.state.bri);
+                    setLighButtonState(h,false, 0);
                     Log.d(Hue.TAG, r.toString());
                 },throwable -> {
                     Log.e(Hue.TAG, "", throwable);

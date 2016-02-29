@@ -10,10 +10,12 @@ public class Whitelist {
 
     @SerializedName("last use date")
     @Expose
-    Date lastuse;
+    public Date lastuse;
     @SerializedName("create date")
     @Expose
-    Date created;
+    public Date created;
     @Expose
-    String name;
+    public String name;
+
+    public String id;
 }
