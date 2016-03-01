@@ -21,6 +21,10 @@ public class MockClient implements Interceptor {
 
         String filename = chain.request().url().url().getFile().substring(1);
 
+        if(filename.equals("api/" + Hue.TOKEN)) {
+            filename += "-all";
+        }
+
         InputStream is = null;
         byte[] buffer = new byte[0];
         try {

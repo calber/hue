@@ -2,6 +2,7 @@ package org.calber.hue;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -29,18 +30,23 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import upnp.UPnPDeviceFinder;
 
-public class MainActivity extends AppCompatActivity implements FragmentInteraction {
+public class MainActivity extends AppCompatActivity implements FragmentInteraction, ViewPager.OnPageChangeListener {
 
     public static final String FRAGMENTTITLE = "title";
 
     @Bind(R.id.root)
     View root;
+    @Bind(R.id.wait)
+    View wait;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.container)
     ViewPager container;
     @Bind(R.id.tabs)
     TabLayout tabs;
+
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
 
     private ArrayList<HueFragment> fragments;
 
@@ -57,6 +63,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
         Hue.TOKEN = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("TOKEN", null);
         Hue.URL = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("URL", null);
+
+        setWait(true);
+
         if (Hue.TOKEN == null) {
             createConnection();
         } else {
@@ -89,12 +98,15 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     fragments.add(WhitelistFragment.newInstance("WHITELIST"));
 
                     container.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
+                    container.addOnPageChangeListener(this);
                     tabs.setupWithViewPager(container);
+
+                    setWait(false);
 
                 }, throwable -> {
                     // fall back, see if IP has changed
-                    Snackbar.make(root,"Failed to connect to HUB",Snackbar.LENGTH_INDEFINITE)
-                            .setAction("SCAN AGAIN",v -> findConnection())
+                    Snackbar.make(root, "Failed to connect to HUB", Snackbar.LENGTH_INDEFINITE)
+                            .setAction("SCAN AGAIN", v -> findConnection())
                             .show();
                     Log.e(Hue.TAG, "", throwable);
                 });
@@ -129,6 +141,24 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         } else {
             Snackbar.make(root, response.error.description, Snackbar.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        if (position == 0)
+            fab.show();
+        else
+            fab.hide();
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -178,5 +208,19 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         return root;
     }
 
+    @Override
+    public FloatingActionButton getFab() {
+        return fab;
+    }
 
+    @Override
+    public void setWait(boolean flag) {
+        if(flag) {
+            container.setVisibility(View.GONE);
+            wait.setVisibility(View.VISIBLE);
+        } else {
+            container.setVisibility(View.VISIBLE);
+            wait.setVisibility(View.GONE);
+        }
+    }
 }

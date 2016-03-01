@@ -1,5 +1,6 @@
 package fragments;
 
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
 /**
@@ -8,4 +9,6 @@ import android.view.View;
 public interface FragmentInteraction {
     void findConnection();
     View getRootView();
+    FloatingActionButton getFab();
+    void setWait(boolean flag);
 }

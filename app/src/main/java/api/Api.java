@@ -36,4 +36,6 @@ public interface Api {
     @DELETE("/api/{token}/config/whitelist/{device}")
     Observable<List<Response>> deleteUser(@Path("token") String token, @Path("device") String device);
 
+    @POST("/api/{token}/lights")
+    Observable<List<Response>> searchLights(@Path("token") String token);
 }

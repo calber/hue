@@ -20,6 +20,8 @@ import adapters.WhiteListAdapter;
 import butterknife.ButterKnife;
 import models.AllData;
 import models.Whitelist;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by calber on 29/2/16.
@@ -73,7 +75,10 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
     @Override
     public void onDataRemoved(Object object, int position) {
         Whitelist w = (Whitelist) object;
-        Hue.api.deleteUser(Hue.TOKEN, w.id).subscribe(
+        Hue.api.deleteUser(Hue.TOKEN, w.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
                 r -> Snackbar.make(listener.getRootView(), "Device deleted", Snackbar.LENGTH_LONG).show(),
                 t -> Snackbar.make(listener.getRootView(), "Failed to delete", Snackbar.LENGTH_LONG).show());
     }
