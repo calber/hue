@@ -7,21 +7,8 @@ import com.google.gson.annotations.Expose;
  */
 public class Response {
     @Expose
-    public User success;
+    public String success;
     @Expose
-    public Error error;
+    public String error;
 
-    public class User {
-        @Expose
-        public String username;
-    }
-
-    public class Error {
-        @Expose
-        public String type;
-        @Expose
-        public String description;
-        @Expose
-        public String address;
-    }
 }

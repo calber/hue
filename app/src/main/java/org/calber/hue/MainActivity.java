@@ -25,7 +25,7 @@ import fragments.HueFragment;
 import fragments.LightsFragment;
 import fragments.WhitelistFragment;
 import models.RequestUser;
-import models.Response;
+import models.ResponseObjects;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import upnp.UPnPDeviceFinder;
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         Hue.api.createUser(new RequestUser("calberhue#" + Hue.androidId))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .retry(3)
                 .subscribe(response -> processRegistrationResult(response.get(0))
                         , throwable -> {
                             Snackbar.make(root, "Fail to create user!", Snackbar.LENGTH_LONG).show();
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", Hue.URL).commit();
                     Hue.api = ApiBuilder.newInstance(Hue.URL);
 
-                    Snackbar.make(root, "Found HUB: " + device.getFriendlyName() + " press Connect on HUB", Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(root, "Found HUB: " + device.getHost() + " press Connect on HUB to start", Snackbar.LENGTH_INDEFINITE)
                             .setAction("CONNECT", v -> apiCreateUser())
                             .show();
                 }, t -> {
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     }
 
 
-    private void processRegistrationResult(Response response) {
+    private void processRegistrationResult(ResponseObjects response) {
         if (response.success != null) {
             Hue.TOKEN = response.success.username;
             getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("TOKEN", response.success.username).commit();

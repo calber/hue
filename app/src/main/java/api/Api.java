@@ -6,6 +6,7 @@ import models.AllData;
 import models.Configuration;
 import models.RequestUser;
 import models.Response;
+import models.ResponseObjects;
 import models.State;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -22,7 +23,7 @@ public interface Api {
 
 
     @POST("api")
-    Observable<List<Response>> createUser(@Body RequestUser device);
+    Observable<List<ResponseObjects>> createUser(@Body RequestUser device);
 
     @GET("api/{token}/config")
     Observable<Configuration> config(@Path("token") String token);
@@ -31,11 +32,11 @@ public interface Api {
     Observable<AllData> all(@Path("token") String token);
 
     @PUT("api/{token}/lights/{id}/state")
-    Observable<List<Response>> lightSwitch(@Path("token") String token,@Path("id") String id, @Body State state);
+    Observable<List<ResponseObjects>> lightSwitch(@Path("token") String token, @Path("id") String id, @Body State state);
 
     @DELETE("/api/{token}/config/whitelist/{device}")
     Observable<List<Response>> deleteUser(@Path("token") String token, @Path("device") String device);
 
     @POST("/api/{token}/lights")
-    Observable<List<Response>> searchLights(@Path("token") String token);
+    Observable<List<ResponseObjects>> searchLights(@Path("token") String token);
 }
