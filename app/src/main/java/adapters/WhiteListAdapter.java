@@ -47,7 +47,7 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         PrettyTime t = new PrettyTime(Locale.getDefault());
 
         h.name.setText(items.get(position).name);
-        h.created.setText(t.format(items.get(position).created));
+        h.created.setText(t.format(items.get(position).lastuse));
     }
 
 
