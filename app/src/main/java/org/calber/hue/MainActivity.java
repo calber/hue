@@ -52,6 +52,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
         setSupportActionBar(toolbar);
 
+//        getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", "http://10.0.0.12/").commit();
+//        getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("TOKEN", "148f61d2149f27f71a81b9ee15f51a23").commit();
+
         Hue.TOKEN = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("TOKEN", null);
         Hue.URL = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("URL", null);
         if (Hue.TOKEN == null) {

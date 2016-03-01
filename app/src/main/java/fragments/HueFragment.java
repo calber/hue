@@ -27,4 +27,8 @@ public class HueFragment extends Fragment {
         }
     }
 
+    public interface OnItemSelected {
+        void onDataReady(Object object, int position);
+        void onDataRemoved(Object object, int position);
+    }
 }

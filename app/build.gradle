@@ -14,9 +14,30 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    buildTypes {
+
+    signingConfigs {
         release {
+            storeFile file("../../android-kstore")
+            storePassword "cnegri"
+            keyAlias "calber"
+            keyPassword "cnegri"
+        }
+    }
+
+    buildTypes {
+        nonetwork {
+            debuggable true
             minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+        release {
+            minifyEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

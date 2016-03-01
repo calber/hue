@@ -3,6 +3,8 @@ package api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.calber.hue.BuildConfig;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -15,6 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class ApiBuilder {
 
+    public static final String NONETWORK = "nonetwork";
     private static String ROOTURL;
     private static Api api;
     private static final String ANDROID = "ANDROID";
@@ -36,7 +39,17 @@ public class ApiBuilder {
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+        OkHttpClient client;
+        if (BuildConfig.BUILD_TYPE.equals(NONETWORK))
+            client = new OkHttpClient.Builder()
+                    .addInterceptor(interceptor)
+                    .addInterceptor(new MockClient())
+                    .build();
+        else
+            client = new OkHttpClient.Builder()
+                    .addInterceptor(interceptor)
+                    .build();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .client(client)

@@ -1,6 +1,7 @@
 package org.calber.hue;
 
 import android.app.Application;
+import android.content.Context;
 import android.provider.Settings;
 
 import com.crashlytics.android.Crashlytics;
@@ -20,6 +21,7 @@ public class Hue extends Application {
     public static String URL;
 
     public static AllData hueConfiguration;
+    public static Context context;
 
     @Override
     public void onCreate() {
@@ -29,6 +31,8 @@ public class Hue extends Application {
             Fabric.with(this, new Crashlytics());
 
         androidId = Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
+        context = getBaseContext();
     }
+
 
 }

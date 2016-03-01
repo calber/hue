@@ -8,6 +8,7 @@ import models.RequestUser;
 import models.Response;
 import models.State;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -31,4 +32,8 @@ public interface Api {
 
     @PUT("api/{token}/lights/{id}/state")
     Observable<List<Response>> lightSwitch(@Path("token") String token,@Path("id") String id, @Body State state);
+
+    @DELETE("/api/{token}/config/whitelist/{device}")
+    Observable<List<Response>> deleteUser(@Path("token") String token, @Path("device") String device);
+
 }
