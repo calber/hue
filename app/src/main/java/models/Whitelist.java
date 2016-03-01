@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-public class Whitelist {
+public class Whitelist implements Comparable<Whitelist> {
 
 
     @SerializedName("last use date")
@@ -18,4 +18,9 @@ public class Whitelist {
     public String name;
 
     public String id;
+
+    @Override
+    public int compareTo(Whitelist another) {
+        return (int) (another.lastuse.getTime() - lastuse.getTime());
+    }
 }

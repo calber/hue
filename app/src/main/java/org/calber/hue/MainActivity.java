@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     container.addOnPageChangeListener(this);
                     tabs.setupWithViewPager(container);
 
+                    toolbar.setTitle(configuration.config.name);
                     setWait(false);
 
                 }, throwable -> {

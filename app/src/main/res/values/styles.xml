@@ -25,7 +25,7 @@
     </style>
 
     <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textColor">@color/gray</item>
+        <item name="android:textColor">@color/lightorange</item>
     </style>
 
     <style name="button">

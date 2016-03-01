@@ -34,6 +34,7 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         inflater = LayoutInflater.from(fragment.getContext());
         listener = fragment;
         this.items = new ArrayList(items);
+        Collections.sort(this.items);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         PrettyTime t = new PrettyTime(Locale.getDefault());
 
         h.name.setText(items.get(position).name);
-        h.created.setText(t.format(items.get(position).lastuse));
+        h.created.setText("Last used: " + t.format(items.get(position).lastuse));
     }
 
 
