@@ -11,4 +11,5 @@ public interface FragmentInteraction {
     View getRootView();
     FloatingActionButton getFab();
     void setWait(boolean flag);
+    Navigator getNavigator();
 }

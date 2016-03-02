@@ -2,16 +2,14 @@ package org.calber.hue;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -21,17 +19,15 @@ import api.ApiController;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import fragments.FragmentInteraction;
-import fragments.GroupsFragment;
 import fragments.HueFragment;
-import fragments.LightsFragment;
 import fragments.Navigator;
-import fragments.SceneFragment;
-import models.AllData;
+import fragments.PagerFragment;
+import fragments.WhitelistFragment;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import upnp.UPnPDeviceFinder;
 
-public class MainActivity extends AppCompatActivity implements FragmentInteraction, ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements FragmentInteraction {
 
     public static final String FRAGMENTTITLE = "title";
 
@@ -39,15 +35,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     View root;
     @Bind(R.id.wait)
     View wait;
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-    @Bind(R.id.container)
-    ViewPager container;
-    @Bind(R.id.tabs)
-    TabLayout tabs;
-
-    @Bind(R.id.fab)
-    FloatingActionButton fab;
 
     private ArrayList<HueFragment> fragments;
     private Navigator navigator;
@@ -58,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         setContentView(R.layout.main);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
         navigator = new Navigator(getSupportFragmentManager(),R.id.root);
 
 //        getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", "http://10.0.0.12/").commit();
@@ -76,11 +62,29 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menudevices:
+                navigator.goTo(WhitelistFragment.newInstance("WHITELIST"));
+                break;
+        }
+        return true;
+    }
+
+
     private void apiConfigurationAll() {
         Hue.api = ApiBuilder.newInstance(Hue.URL);
         ApiController.apiAll()
                 .subscribe(configuration -> {
-                    loadPager(configuration);
+                    navigator.setRootFragment(PagerFragment.newInstance());
                 }, throwable -> {
                     // fall back, see if IP has changed
                     Snackbar.make(root, "Failed to connect to HUB", Snackbar.LENGTH_INDEFINITE)
@@ -90,20 +94,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                 });
     }
 
-    private void loadPager(AllData configuration) {
-        fragments = new ArrayList<>();
-        fragments.add(LightsFragment.newInstance("LIGHTS"));
-        fragments.add(GroupsFragment.newInstance("GROUPS"));
-        fragments.add(SceneFragment.newInstance("SCENES"));
-        //fragments.add(WhitelistFragment.newInstance("WHITELIST"));
-
-        container.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
-        container.addOnPageChangeListener(this);
-        tabs.setupWithViewPager(container);
-
-        toolbar.setTitle(configuration.config.name);
-        setWait(false);
-    }
 
     private void createConnection() {
         new UPnPDeviceFinder().observe()
@@ -120,7 +110,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                             .setAction("CONNECT", v -> {
                                 ApiController.apiCreateUser(this)
                                         .subscribe(configuration -> {
-                                            loadPager(Hue.hueConfiguration);
+                                            navigator.setRootFragment(PagerFragment.newInstance());
+                                            //loadPager(Hue.hueConfiguration);
                                         }, throwable -> {
                                             // fall back, see if IP has changed
                                             Snackbar.make(root, "Failed to connect to HUB", Snackbar.LENGTH_INDEFINITE)
@@ -136,46 +127,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     }
 
 
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (position == 0)
-            fab.show();
-        else
-            fab.hide();
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-
-    }
-
-    public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        public SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return fragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return fragments.get(position).getArguments().getString(FRAGMENTTITLE);
-        }
-    }
-
-    @Override
     public void findConnection() {
         new UPnPDeviceFinder().observe()
                 .subscribeOn(Schedulers.io())
@@ -202,18 +153,22 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
     }
 
     @Override
+    @Nullable
     public FloatingActionButton getFab() {
-        return fab;
+        return (FloatingActionButton) root.findViewById(R.id.fab);
     }
 
     @Override
     public void setWait(boolean flag) {
         if (flag) {
-            container.setVisibility(View.GONE);
             wait.setVisibility(View.VISIBLE);
         } else {
-            container.setVisibility(View.VISIBLE);
             wait.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public Navigator getNavigator() {
+        return navigator;
     }
 }

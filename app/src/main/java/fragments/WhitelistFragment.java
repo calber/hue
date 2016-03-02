@@ -2,8 +2,10 @@ package fragments;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import adapters.ItemTouchHelperCallback;
 import adapters.OnStartDragListener;
 import adapters.WhiteListAdapter;
 import api.ApiController;
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.AllData;
 import models.Whitelist;
@@ -26,7 +29,12 @@ import models.Whitelist;
  * Created by calber on 29/2/16.
  */
 public class WhitelistFragment extends HueFragment implements OnStartDragListener, HueFragment.OnItemSelected {
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+
+
     private ItemTouchHelper mItemTouchHelper;
+    private AppCompatActivity act;
 
     public WhitelistFragment() {
     }
@@ -41,8 +49,17 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.list, container, false);
+        View rootView = inflater.inflate(R.layout.devicelist, container, false);
         ButterKnife.bind(this, rootView);
+
+        act = ((AppCompatActivity) getActivity());
+
+        act.setSupportActionBar(toolbar);
+        act.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        act.getSupportActionBar().setDisplayShowCustomEnabled(false);
+        act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setTitle(Hue.hueConfiguration.config.name);
+
         list.setLayoutManager(new LinearLayoutManager(this.getContext()));
         loadWhiteList(Hue.hueConfiguration);
         return rootView;
@@ -57,6 +74,7 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(list);
+        toolbar.setNavigationOnClickListener(v -> listener.getNavigator().goOneBack());
 
         Log.d(Hue.TAG, configuration.toString());
     }

@@ -1,6 +1,7 @@
 package fragments;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 
@@ -13,6 +14,7 @@ import butterknife.Bind;
  */
 public class HueFragment extends Fragment {
 
+    @Nullable
     @Bind(R.id.list)
     RecyclerView list;
     protected FragmentInteraction listener;
