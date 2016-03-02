@@ -15,6 +15,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import fragments.HueFragment;
 import models.Group;
 
 /**
@@ -23,11 +24,13 @@ import models.Group;
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> {
 
     private final LayoutInflater inflater;
+    private final HueFragment.OnItemSelected listener;
     private List<Group> items = new ArrayList<>();
 
-    public GroupAdapter(Context context, Collection<Group> items) {
+    public GroupAdapter(Context context, Collection<Group> items, HueFragment.OnItemSelected listener) {
         inflater = LayoutInflater.from(context);
         this.items = new ArrayList(items);
+        this.listener = listener;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder h, int position) {
         h.name.setText(items.get(position).name);
         h.lights.setText(String.format("%d lights",items.get(position).lights.size()));
-        Group group = items.get(position);
+        h.position = position;
     }
 
 
@@ -49,15 +52,22 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         return items.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.name)
         TextView name;
         @Bind(R.id.lights)
         TextView lights;
+        public int position;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onDataReady(items.get(position),position);
         }
     }
 

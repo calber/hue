@@ -46,5 +46,5 @@ public interface Api {
     Observable<HashMap<String,Scene>> scenes(@Path("token") String token);
 
     @PUT("/api/{username}/groups/{id}/action")
-    Observable<List<ResponseObjects>> setScene(@Body State state);
+    Observable<List<ResponseObjects>> setScene(@Path("token") String token, @Path("id") String id, @Body State state);
 }

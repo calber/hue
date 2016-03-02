@@ -10,6 +10,7 @@ import java.util.List;
 import models.AllData;
 import models.RequestUser;
 import models.ResponseObjects;
+import models.State;
 import models.Whitelist;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -57,6 +58,13 @@ public class ApiController {
                     context.getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("TOKEN", response.success.username).commit();
                 })
                 .last()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @NonNull
+    public static Observable<?> apiSetScene(String id, State s) {
+        return Hue.api.setScene(Hue.TOKEN,id,s)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

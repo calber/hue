@@ -20,7 +20,7 @@ import models.AllData;
 /**
  * Created by calber on 29/2/16.
  */
-public class GroupsFragment extends HueFragment {
+public class GroupsFragment extends HueFragment implements HueFragment.OnItemSelected{
     @Bind(R.id.list)
     RecyclerView list;
 
@@ -49,8 +49,18 @@ public class GroupsFragment extends HueFragment {
         for(String l: configuration.groups.keySet()) {
             configuration.groups.get(l).id = l;
         }
-        list.setAdapter(new GroupAdapter(getContext(), configuration.groups.values()));
+        list.setAdapter(new GroupAdapter(getContext(), configuration.groups.values(),this));
         Log.d(Hue.TAG, configuration.toString());
     }
 
+    @Override
+    public void onDataReady(Object object, int position) {
+        Log.d(Hue.TAG, object.toString());
+
+    }
+
+    @Override
+    public void onDataRemoved(Object object, int position) {
+
+    }
 }
