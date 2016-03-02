@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import org.calber.hue.Hue;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
 
 import models.AllData;
+import models.Change;
 import models.RequestUser;
 import models.ResponseObjects;
 import models.Scene;
@@ -44,7 +46,10 @@ public class ApiController {
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread());
         return Hue.api.all(Hue.TOKEN)
-                .doOnNext(allData -> Hue.hueConfiguration = allData)
+                .doOnNext(allData -> {
+                    Hue.hueConfiguration = allData;
+                    EventBus.getDefault().post(new Change());
+                })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -81,7 +86,8 @@ public class ApiController {
 
     @NonNull
     public static Observable<?> apiSetScene(String id, State s) {
-        return Hue.api.setScene(Hue.TOKEN, id, s)
+        return Observable.concat(Hue.api.setScene(Hue.TOKEN, id, s),apiAll())
+                .last()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

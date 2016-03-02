@@ -16,11 +16,13 @@ import android.view.ViewGroup;
 import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
 import org.calber.hue.R;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import models.Change;
 
 /**
  * Created by calber on 29/2/16.
@@ -110,6 +112,10 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
     @Override
     public void onPageScrollStateChanged(int state) {
 
+    }
+
+    @Subscribe
+    public void onEvent(Change event) {
     }
 
 }

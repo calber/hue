@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
 import org.calber.hue.R;
+import org.greenrobot.eventbus.Subscribe;
 
 import adapters.SceneAdapter;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.AllData;
+import models.Change;
 
 /**
  * Created by calber on 29/2/16.
@@ -51,6 +53,10 @@ public class SceneFragment extends HueFragment {
         }
         list.setAdapter(new SceneAdapter(getContext(), configuration.scenes.values()));
         Log.d(Hue.TAG, configuration.toString());
+    }
+
+    @Subscribe
+    public void onEvent(Change event) {
     }
 
 }

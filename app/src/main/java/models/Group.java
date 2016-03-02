@@ -17,6 +17,7 @@ public class Group {
     @Expose
     public String name;
 
+    public boolean localstate;
     public String id;
 }
 

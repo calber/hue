@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 
 import org.calber.hue.R;
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.Bind;
 
@@ -27,6 +28,13 @@ public class HueFragment extends Fragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement FragmentInteraction");
         }
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        EventBus.getDefault().unregister(this);
     }
 
     public interface OnItemSelected {

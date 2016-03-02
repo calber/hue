@@ -12,12 +12,15 @@ import android.view.ViewGroup;
 import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
 import org.calber.hue.R;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import adapters.LightAdapter;
 import api.ApiController;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.AllData;
+import models.Change;
 
 /**
  * Created by calber on 29/2/16.
@@ -71,6 +74,11 @@ public class LightsFragment extends HueFragment {
                     }
                 })
                 .show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onChangeEvent(Change event) {
+        loadLight(Hue.hueConfiguration);
     }
 
 

@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.common.eventbus.Subscribe;
+
 import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
 import org.calber.hue.R;
@@ -23,6 +25,7 @@ import api.ApiController;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.AllData;
+import models.Change;
 import models.Whitelist;
 
 /**
@@ -112,4 +115,9 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
                 }).show();
 
     }
+
+    @Subscribe
+    public void onEvent(Change event) {
+    }
+
 }
