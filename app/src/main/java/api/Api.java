@@ -1,5 +1,6 @@
 package api;
 
+import java.util.HashMap;
 import java.util.List;
 
 import models.AllData;
@@ -7,6 +8,7 @@ import models.Configuration;
 import models.RequestUser;
 import models.Response;
 import models.ResponseObjects;
+import models.Scene;
 import models.State;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -39,4 +41,10 @@ public interface Api {
 
     @POST("/api/{token}/lights")
     Observable<List<ResponseObjects>> searchLights(@Path("token") String token);
+
+    @GET("api/{token}/scenes")
+    Observable<HashMap<String,Scene>> scenes(@Path("token") String token);
+
+    @PUT("/api/{username}/groups/{id}/action")
+    Observable<List<ResponseObjects>> setScene(@Body State state);
 }

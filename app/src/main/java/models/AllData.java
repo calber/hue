@@ -15,6 +15,8 @@ public class AllData {
     public HashMap<String,Group> groups;
     @Expose
     public HashMap<String,Schedule> schedules;
+    @Expose
+    public HashMap<String,Scene> scenes;
 
     @Expose
     public Configuration config;

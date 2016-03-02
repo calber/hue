@@ -14,11 +14,10 @@ import org.calber.hue.MainActivity;
 import org.calber.hue.R;
 
 import adapters.LightAdapter;
+import api.ApiController;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.AllData;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by calber on 29/2/16.
@@ -45,11 +44,9 @@ public class LightsFragment extends HueFragment {
         ButterKnife.bind(this, rootView);
 
         listener.getFab().setOnClickListener(v ->
-                Hue.api.searchLights(Hue.TOKEN)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> searchingNewLights()
-                        , t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show()));
+                ApiController.apiSeachLigths()
+                        .subscribe(r -> searchingNewLights()
+                                , t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show()));
 
         list.setLayoutManager(new LinearLayoutManager(this.getContext()));
         loadLight(Hue.hueConfiguration);
@@ -66,11 +63,8 @@ public class LightsFragment extends HueFragment {
                     public void onDismissed(Snackbar snackbar, int event) {
                         listener.setWait(false);
                         listener.getFab().show();
-                        Hue.api.all(Hue.TOKEN)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
+                        ApiController.apiAll()
                                 .subscribe(configuration -> {
-                                    Hue.hueConfiguration = configuration;
                                     loadLight(configuration);
                                 }, t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show());
                         super.onDismissed(snackbar, event);

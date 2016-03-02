@@ -17,11 +17,10 @@ import org.calber.hue.R;
 import adapters.ItemTouchHelperCallback;
 import adapters.OnStartDragListener;
 import adapters.WhiteListAdapter;
+import api.ApiController;
 import butterknife.ButterKnife;
 import models.AllData;
 import models.Whitelist;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by calber on 29/2/16.
@@ -75,11 +74,24 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
     @Override
     public void onDataRemoved(Object object, int position) {
         Whitelist w = (Whitelist) object;
-        Hue.api.deleteUser(Hue.TOKEN, w.id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                r -> Snackbar.make(listener.getRootView(), "Device deleted", Snackbar.LENGTH_LONG).show(),
-                t -> Snackbar.make(listener.getRootView(), "Failed to delete", Snackbar.LENGTH_LONG).show());
+        Snackbar.make(listener.getRootView(), "Device removed", Snackbar.LENGTH_LONG)
+                .setAction("CANCEL", v -> loadWhiteList(Hue.hueConfiguration))
+                .setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        super.onDismissed(snackbar, event);
+                        if (event == DISMISS_EVENT_TIMEOUT)
+                            ApiController.apiDeleteUser(w).subscribe(
+                                    r -> {
+                                        Snackbar.make(listener.getRootView(), "Device deleted", Snackbar.LENGTH_LONG).show();
+                                        loadWhiteList(Hue.hueConfiguration);
+                                    },
+                                    t -> {
+                                        Snackbar.make(listener.getRootView(), "Failed to delete", Snackbar.LENGTH_LONG).show();
+                                        loadWhiteList(Hue.hueConfiguration);
+                                    });
+                    }
+                }).show();
+
     }
 }

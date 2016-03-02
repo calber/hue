@@ -21,6 +21,8 @@ public class Whitelist implements Comparable<Whitelist> {
 
     @Override
     public int compareTo(Whitelist another) {
-        return (int) (another.lastuse.getTime() - lastuse.getTime());
+        if(another.lastuse.getTime() > lastuse.getTime()) return 1;
+        if(another.lastuse.getTime() < lastuse.getTime()) return -1;
+        return 0;
     }
 }
