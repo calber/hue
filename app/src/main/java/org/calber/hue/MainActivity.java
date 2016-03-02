@@ -31,10 +31,11 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
     public static final String FRAGMENTTITLE = "title";
 
-    @Bind(R.id.root)
-    View root;
     @Bind(R.id.wait)
     View wait;
+
+    @Bind(R.id.root)
+    View root;
 
     private ArrayList<HueFragment> fragments;
     private Navigator navigator;
@@ -87,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     navigator.setRootFragment(PagerFragment.newInstance());
                 }, throwable -> {
                     // fall back, see if IP has changed
-                    Snackbar.make(root, "Failed to connect to HUB", Snackbar.LENGTH_INDEFINITE)
-                            .setAction("SCAN AGAIN", v -> findConnection())
+                    Snackbar.make(getRootView(), R.string.failtoconnect, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.scanagain, v -> findConnection())
                             .show();
                     Log.e(Hue.TAG, "", throwable);
                 });
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", Hue.URL).commit();
                     Hue.api = ApiBuilder.newInstance(Hue.URL);
 
-                    Snackbar.make(root, "Found HUB: " + device.getHost() + " press Connect on HUB to start", Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(getRootView(), String.format(getString(R.string.foundhub), device.getHost()), Snackbar.LENGTH_INDEFINITE)
                             .setAction("CONNECT", v -> {
                                 ApiController.apiCreateUser(this)
                                         .subscribe(configuration -> {
@@ -114,15 +115,15 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                                             //loadPager(Hue.hueConfiguration);
                                         }, throwable -> {
                                             // fall back, see if IP has changed
-                                            Snackbar.make(root, "Failed to connect to HUB", Snackbar.LENGTH_INDEFINITE)
-                                                    .setAction("SCAN AGAIN", v1 -> findConnection())
+                                            Snackbar.make(getRootView(), R.string.failtoconnect, Snackbar.LENGTH_INDEFINITE)
+                                                    .setAction(R.string.scanagain, v1 -> findConnection())
                                                     .show();
                                             Log.e(Hue.TAG, "", throwable);
                                         });
                             })
                             .show();
                 }, t -> {
-                    Snackbar.make(root, "Failed to find Hue HUB on this network", Snackbar.LENGTH_INDEFINITE).show();
+                    Snackbar.make(getRootView(), R.string.failednetwork, Snackbar.LENGTH_INDEFINITE).show();
                 });
     }
 
@@ -137,11 +138,11 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                             , device.getLocation().getHost());
                     getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", Hue.URL).commit();
                     Hue.api = ApiBuilder.newInstance(Hue.URL);
-                    Snackbar.make(root, "Found HUB: " + device.getFriendlyName(), Snackbar.LENGTH_LONG)
+                    Snackbar.make(getRootView(), "Found HUB: " + device.getHost(), Snackbar.LENGTH_LONG)
                             .show();
                     apiConfigurationAll();
                 }, t -> {
-                    Snackbar.make(root, "Failed to find Hue HUB on this network", Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(getRootView(), R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
                             .setAction("EXIT", v -> finish())
                             .show();
                 });
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
     @Override
     public View getRootView() {
-        return root;
+        return navigator.getActiveFragment().getView().findViewById(R.id.coord);
     }
 
     @Override

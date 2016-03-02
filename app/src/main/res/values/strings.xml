@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">hue</string>
+    <string name="failednetwork">Failed to find Hue HUB on this network</string>
+    <string name="foundhub">Found HUB: %1$s press Connect on HUB to start</string>
+    <string name="failtoconnect">Failed to connect to HUB</string>
+    <string name="scanagain">SCAN AGAIN</string>
 </resources>

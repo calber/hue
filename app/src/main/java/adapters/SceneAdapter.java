@@ -38,7 +38,7 @@ public class SceneAdapter extends RecyclerView.Adapter<SceneAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder h, int position) {
-        h.name.setText(items.get(position).name);
+        h.name.setText(items.get(position).getCleanName());
         h.lights.setText(String.format("%d lights",items.get(position).lights.size()));
         Scene group = items.get(position);
     }

@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 
 import org.calber.hue.BuildConfig;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -48,6 +50,9 @@ public class ApiBuilder {
                     .build();
         else
             client = new OkHttpClient.Builder()
+                    .connectTimeout(5, TimeUnit.SECONDS)
+                    .writeTimeout(10, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
                     .addInterceptor(interceptor)
                     .build();
 

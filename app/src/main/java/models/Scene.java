@@ -1,5 +1,7 @@
 package models;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.gson.annotations.Expose;
 
 import java.util.ArrayList;
@@ -32,4 +34,8 @@ public class Scene {
 
     public String id;
 
+    public String getCleanName() {
+        List<String> result = Splitter.on(" ").trimResults().omitEmptyStrings().splitToList(name);
+        return Joiner.on(" ").join(result.get(0),result.get(1));
+    }
 }

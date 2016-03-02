@@ -5,11 +5,13 @@ import android.support.annotation.NonNull;
 
 import org.calber.hue.Hue;
 
+import java.util.HashMap;
 import java.util.List;
 
 import models.AllData;
 import models.RequestUser;
 import models.ResponseObjects;
+import models.Scene;
 import models.State;
 import models.Whitelist;
 import rx.Observable;
@@ -24,7 +26,6 @@ public class ApiController {
 
     @NonNull
     public static Observable<?> apiDeleteUser(Whitelist w) {
-        if (Hue.api == null) return null;
         return Observable.concat(Hue.api.deleteUser(Hue.TOKEN, w.id), apiAll())
                 .last()
                 .subscribeOn(Schedulers.io())
@@ -33,7 +34,15 @@ public class ApiController {
 
     @NonNull
     public static Observable<AllData> apiAll() {
-        if (Hue.api == null) return null;
+//        return Observable.zip(Hue.api.all(Hue.TOKEN), Hue.api.scenes(Hue.TOKEN)
+//                , (alld, sash) -> {
+//                    Hue.hueConfiguration = alld;
+//                    Hue.hueConfiguration.appscenes = sash;
+//                    return Hue.hueConfiguration;
+//                })
+//                .retry(3)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
         return Hue.api.all(Hue.TOKEN)
                 .doOnNext(allData -> Hue.hueConfiguration = allData)
                 .subscribeOn(Schedulers.io())
@@ -63,8 +72,16 @@ public class ApiController {
     }
 
     @NonNull
+    public static Observable<HashMap<String, Scene>> apiGetScenes() {
+        return Hue.api.scenes(Hue.TOKEN)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    @NonNull
     public static Observable<?> apiSetScene(String id, State s) {
-        return Hue.api.setScene(Hue.TOKEN,id,s)
+        return Hue.api.setScene(Hue.TOKEN, id, s)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
