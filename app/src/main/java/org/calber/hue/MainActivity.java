@@ -23,6 +23,7 @@ import fragments.HueFragment;
 import fragments.Navigator;
 import fragments.PagerFragment;
 import fragments.WhitelistFragment;
+import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import upnp.UPnPDeviceFinder;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         setContentView(R.layout.main);
         ButterKnife.bind(this);
 
-        navigator = new Navigator(getSupportFragmentManager(),R.id.root);
+        navigator = new Navigator(getSupportFragmentManager(), R.id.root);
 
 //        getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", "http://10.0.0.12/").commit();
 //        getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("TOKEN", "148f61d2149f27f71a81b9ee15f51a23").commit();
@@ -87,10 +88,15 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                 .subscribe(configuration -> {
                     navigator.setRootFragment(PagerFragment.newInstance());
                 }, throwable -> {
+                    HttpException ex = (HttpException) throwable;
                     // fall back, see if IP has changed
-                    Snackbar.make(getRootView(), R.string.failtoconnect, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(R.string.scanagain, v -> findConnection())
-                            .show();
+                    if (ex.code() == 403) {
+                        createConnection();
+                    } else {
+                        Snackbar.make(root, ex.message(), Snackbar.LENGTH_INDEFINITE)
+                                .setAction(R.string.exit, v -> finish())
+                                .show();
+                    }
                     Log.e(Hue.TAG, "", throwable);
                 });
     }
@@ -101,21 +107,28 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(device -> {
+                    setWait(false);
                     Hue.URL = String.format("%s://%s/"
                             , device.getLocation().getProtocol()
                             , device.getLocation().getHost());
                     getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", Hue.URL).commit();
                     Hue.api = ApiBuilder.newInstance(Hue.URL);
 
-                    Snackbar.make(getRootView(), String.format(getString(R.string.foundhub), device.getHost()), Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(root, String.format(getString(R.string.foundhub), device.getHost()), Snackbar.LENGTH_INDEFINITE)
                             .setAction("CONNECT", v -> {
                                 ApiController.apiCreateUser(this)
                                         .subscribe(configuration -> {
-                                            navigator.setRootFragment(PagerFragment.newInstance());
+                                            ApiController.apiAll().subscribe(allData ->
+                                                            navigator.setRootFragment(PagerFragment.newInstance())
+                                                    , t -> {
+                                                        Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
+                                                                .setAction("EXIT", v1 -> finish())
+                                                                .show();
+                                                    });
                                             //loadPager(Hue.hueConfiguration);
                                         }, throwable -> {
                                             // fall back, see if IP has changed
-                                            Snackbar.make(getRootView(), R.string.failtoconnect, Snackbar.LENGTH_INDEFINITE)
+                                            Snackbar.make(root, R.string.failtoconnect, Snackbar.LENGTH_INDEFINITE)
                                                     .setAction(R.string.scanagain, v1 -> findConnection())
                                                     .show();
                                             Log.e(Hue.TAG, "", throwable);
@@ -123,7 +136,11 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                             })
                             .show();
                 }, t -> {
-                    Snackbar.make(getRootView(), R.string.failednetwork, Snackbar.LENGTH_INDEFINITE).show();
+                    setWait(false);
+                    Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
+                            .setAction("EXIT", v -> finish())
+                            .show();
+
                 });
     }
 
@@ -133,16 +150,17 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(device -> {
+                    setWait(false);
                     Hue.URL = String.format("%s://%s/"
                             , device.getLocation().getProtocol()
                             , device.getLocation().getHost());
                     getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", Hue.URL).commit();
                     Hue.api = ApiBuilder.newInstance(Hue.URL);
-                    Snackbar.make(getRootView(), "Found HUB: " + device.getHost(), Snackbar.LENGTH_LONG)
-                            .show();
+                    Snackbar.make(root, "Found HUB: " + device.getHost(), Snackbar.LENGTH_LONG).show();
                     apiConfigurationAll();
                 }, t -> {
-                    Snackbar.make(getRootView(), R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
+                    setWait(false);
+                    Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
                             .setAction("EXIT", v -> finish())
                             .show();
                 });

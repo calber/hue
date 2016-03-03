@@ -8,6 +8,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import models.AllData;
 import models.Change;
@@ -18,6 +19,7 @@ import models.State;
 import models.Whitelist;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -63,18 +65,17 @@ public class ApiController {
     }
 
     @NonNull
-    public static Observable<?> apiCreateUser(Context context) {
-        return Observable.concat(Hue.api.createUser(new RequestUser("calberhue#" + Hue.androidId)),
-                apiAll())
+    public static Observable<List<ResponseObjects>> apiCreateUser(Context context) {
+        return Hue.api.createUser(new RequestUser("calberhue#" + Hue.androidId))
                 .doOnNext(o -> {
-                    ResponseObjects response = ((List<ResponseObjects>) o).get(0);
+                    ResponseObjects response = o.get(0);
                     Hue.TOKEN = response.success.username;
                     context.getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("TOKEN", response.success.username).commit();
                 })
-                .last()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
 
     @NonNull
     public static Observable<HashMap<String, Scene>> apiGetScenes() {
@@ -86,11 +87,45 @@ public class ApiController {
 
     @NonNull
     public static Observable<?> apiSetScene(String id, State s) {
-        return Observable.concat(Hue.api.setScene(Hue.TOKEN, id, s),apiAll())
+        return Observable.concat(Hue.api.setScene(Hue.TOKEN, id, s), apiAll())
                 .last()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    public static class RetryWithDelay implements
+            Func1<Observable<? extends Throwable>, Observable<?>> {
+
+        private final int maxRetries;
+        private final int retryDelayMillis;
+        private int retryCount;
+
+        public RetryWithDelay(final int maxRetries, final int retryDelayMillis) {
+            this.maxRetries = maxRetries;
+            this.retryDelayMillis = retryDelayMillis;
+            this.retryCount = 0;
+        }
+
+        @Override
+        public Observable<?> call(Observable<? extends Throwable> attempts) {
+            return attempts
+                    .flatMap(new Func1<Throwable, Observable<?>>() {
+                        @Override
+                        public Observable<?> call(Throwable throwable) {
+                            if (++retryCount < maxRetries) {
+                                // When this Observable calls onNext, the original
+                                // Observable will be retried (i.e. re-subscribed).
+                                return Observable.timer(retryDelayMillis,
+                                        TimeUnit.MILLISECONDS);
+                            }
+
+                            // Max retries hit. Just pass the error along.
+                            return Observable.error(throwable);
+                        }
+                    });
+        }
+    }
+
 }
 
 

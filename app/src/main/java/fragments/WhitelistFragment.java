@@ -12,11 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.common.eventbus.Subscribe;
-
 import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
 import org.calber.hue.R;
+import org.greenrobot.eventbus.Subscribe;
 
 import adapters.ItemTouchHelperCallback;
 import adapters.OnStartDragListener;

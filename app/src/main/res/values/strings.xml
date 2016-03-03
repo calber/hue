@@ -4,4 +4,5 @@
     <string name="foundhub">Found HUB: %1$s press Connect on HUB to start</string>
     <string name="failtoconnect">Failed to connect to HUB</string>
     <string name="scanagain">SCAN AGAIN</string>
+    <string name="exit">EXIT</string>
 </resources>

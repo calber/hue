@@ -87,9 +87,10 @@ public class UPnPDeviceFinder {
                         Log.e(TAG, "found dev: " + receivedString);
                         UPnPDevice device = UPnPDevice.getInstance(receivedString);
                         if (device != null) {
-                            subscriber.onNext(device);
-                            if(device.getProperties().containsKey("upnp_hue-bridgeid"))
+                            if(device.getProperties().containsKey("upnp_hue-bridgeid")) {
+                                subscriber.onNext(device);
                                 mSock.close();
+                            }
                         }
                     }
                 } catch (IOException e) {

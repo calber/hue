@@ -2,12 +2,20 @@ package api;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonReader;
 
 import org.calber.hue.BuildConfig;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import models.ResponseObjects;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -54,6 +62,7 @@ public class ApiBuilder {
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
                     .addInterceptor(interceptor)
+                    //.addInterceptor(new PhilipsDontKnowWhatIsRest())
                     .build();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -67,5 +76,36 @@ public class ApiBuilder {
         return api;
     }
 
+    static class PhilipsDontKnowWhatIsRest implements Interceptor {
+
+        @Override
+        public Response intercept(Interceptor.Chain chain) throws IOException {
+            Response originalResponse = chain.proceed(chain.request());
+
+            Gson gson = new Gson();
+            Type type = new TypeToken<List<ResponseObjects>>() {
+            }.getType();
+
+            List<ResponseObjects> res = null;
+            JsonReader reader = new JsonReader(originalResponse.body().charStream());
+            try {
+                res = gson.fromJson(reader, type);
+                if (res.size() > 0 && res.get(0).error != null)
+                    switch (res.get(0).error.type) {
+                        case "1":
+                            return originalResponse.newBuilder().code(403).message(res.get(0).error.description).build();
+                        case "3":
+                            return originalResponse.newBuilder().code(404).message(res.get(0).error.description).build();
+                        default:
+                            return originalResponse.newBuilder().code(400).message(res.get(0).error.description).build();
+                    }
+                else
+                    return originalResponse.newBuilder().build();
+            } catch (Exception e) {
+                return originalResponse.newBuilder().build();
+            }
+        }
+
+    }
 
 }
