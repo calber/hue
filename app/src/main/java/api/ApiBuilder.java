@@ -3,19 +3,22 @@ package api;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 
+import org.apache.commons.io.IOUtils;
 import org.calber.hue.BuildConfig;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import models.ResponseObjects;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -62,7 +65,7 @@ public class ApiBuilder {
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
                     .addInterceptor(interceptor)
-                    //.addInterceptor(new PhilipsDontKnowWhatIsRest())
+                    .addInterceptor(new PhilipsDontKnowWhatIsRest())
                     .build();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -83,13 +86,14 @@ public class ApiBuilder {
             Response originalResponse = chain.proceed(chain.request());
 
             Gson gson = new Gson();
-            Type type = new TypeToken<List<ResponseObjects>>() {
-            }.getType();
+            Type type = new TypeToken<List<ResponseObjects>>() {}.getType();
 
-            List<ResponseObjects> res = null;
-            JsonReader reader = new JsonReader(originalResponse.body().charStream());
+            StringWriter writer = new StringWriter();
+            IOUtils.copy(originalResponse.body().charStream(), writer);
+            String s = writer.toString();
+
             try {
-                res = gson.fromJson(reader, type);
+                List<ResponseObjects> res = gson.fromJson(s, type);
                 if (res.size() > 0 && res.get(0).error != null)
                     switch (res.get(0).error.type) {
                         case "1":
@@ -100,9 +104,9 @@ public class ApiBuilder {
                             return originalResponse.newBuilder().code(400).message(res.get(0).error.description).build();
                     }
                 else
-                    return originalResponse.newBuilder().build();
+                    return originalResponse.newBuilder().body(ResponseBody.create(MediaType.parse("application/json"),s)).build();
             } catch (Exception e) {
-                return originalResponse.newBuilder().build();
+                return originalResponse.newBuilder().body(ResponseBody.create(MediaType.parse("application/json"),s)).build();
             }
         }
 

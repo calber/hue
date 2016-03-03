@@ -160,13 +160,22 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(device -> {
                     setWait(false);
+
                     Hue.URL = String.format("%s://%s/"
                             , device.getLocation().getProtocol()
                             , device.getLocation().getHost());
                     getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", Hue.URL).commit();
                     Hue.api = ApiBuilder.newInstance(Hue.URL);
+
                     Snackbar.make(root, "Found HUB: " + device.getHost(), Snackbar.LENGTH_LONG).show();
-                    apiConfigurationAll();
+                    ApiController.apiAll().subscribe(allData -> {
+                        Snackbar.make(root, R.string.connected, Snackbar.LENGTH_SHORT).show();
+                        navigator.setRootFragment(PagerFragment.newInstance());
+                    }, t -> {
+                        Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
+                                .setAction("EXIT", v1 -> finish())
+                                .show();
+                    });
                 }, t -> {
                     setWait(false);
                     Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)

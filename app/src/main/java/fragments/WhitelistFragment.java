@@ -15,7 +15,9 @@ import android.view.ViewGroup;
 import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
 import org.calber.hue.R;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import adapters.ItemTouchHelperCallback;
 import adapters.OnStartDragListener;
@@ -103,19 +105,21 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
                         if (event == DISMISS_EVENT_TIMEOUT)
                             ApiController.apiDeleteUser(w).subscribe(
                                     r -> {
-                                        loadWhiteList(Hue.hueConfiguration);
+                                        EventBus.getDefault().post(new Change());
                                     },
                                     t -> {
                                         Snackbar.make(listener.getRootView(), "Failed to delete", Snackbar.LENGTH_LONG).show();
-                                        loadWhiteList(Hue.hueConfiguration);
+                                        EventBus.getDefault().post(new Change());
                                     });
                     }
                 }).show();
 
     }
 
-    @Subscribe
-    public void onEvent(Change event) {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onChangeEvent(Change event) {
+        loadWhiteList(Hue.hueConfiguration);
     }
+
 
 }
