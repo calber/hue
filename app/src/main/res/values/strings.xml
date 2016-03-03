@@ -5,4 +5,5 @@
     <string name="failtoconnect">Failed to connect to HUB</string>
     <string name="scanagain">SCAN AGAIN</string>
     <string name="exit">EXIT</string>
+    <string name="connected">Hub Connected</string>
 </resources>

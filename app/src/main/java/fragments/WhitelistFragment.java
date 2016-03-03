@@ -103,7 +103,6 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
                         if (event == DISMISS_EVENT_TIMEOUT)
                             ApiController.apiDeleteUser(w).subscribe(
                                     r -> {
-                                        Snackbar.make(listener.getRootView(), "Device deleted", Snackbar.LENGTH_LONG).show();
                                         loadWhiteList(Hue.hueConfiguration);
                                     },
                                     t -> {

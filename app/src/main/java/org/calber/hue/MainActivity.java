@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -88,16 +87,27 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                 .subscribe(configuration -> {
                     navigator.setRootFragment(PagerFragment.newInstance());
                 }, throwable -> {
-                    HttpException ex = (HttpException) throwable;
-                    // fall back, see if IP has changed
-                    if (ex.code() == 403) {
-                        createConnection();
-                    } else {
-                        Snackbar.make(root, ex.message(), Snackbar.LENGTH_INDEFINITE)
-                                .setAction(R.string.exit, v -> finish())
-                                .show();
+                    setWait(false);
+                    HttpException ex = null;
+                    try {
+                        ex = (HttpException) throwable;
+                        // fall back, see if IP has changed
+                        switch (ex.code()) {
+                            case 403:
+                                createConnection();
+                                break;
+                            case 404:
+                                findConnection();
+                                break;
+                            default:
+                                Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
+                                        .setAction("EXIT", v1 -> finish())
+                                        .show();
+                                break;
+                        }
+                    } catch (Exception e) {
+                        findConnection();
                     }
-                    Log.e(Hue.TAG, "", throwable);
                 });
     }
 
@@ -114,27 +124,26 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", Hue.URL).commit();
                     Hue.api = ApiBuilder.newInstance(Hue.URL);
 
-                    Snackbar.make(root, String.format(getString(R.string.foundhub), device.getHost()), Snackbar.LENGTH_INDEFINITE)
-                            .setAction("CONNECT", v -> {
-                                ApiController.apiCreateUser(this)
-                                        .subscribe(configuration -> {
-                                            ApiController.apiAll().subscribe(allData ->
-                                                            navigator.setRootFragment(PagerFragment.newInstance())
-                                                    , t -> {
-                                                        Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
-                                                                .setAction("EXIT", v1 -> finish())
-                                                                .show();
-                                                    });
-                                            //loadPager(Hue.hueConfiguration);
-                                        }, throwable -> {
-                                            // fall back, see if IP has changed
-                                            Snackbar.make(root, R.string.failtoconnect, Snackbar.LENGTH_INDEFINITE)
-                                                    .setAction(R.string.scanagain, v1 -> findConnection())
-                                                    .show();
-                                            Log.e(Hue.TAG, "", throwable);
-                                        });
-                            })
-                            .show();
+                    ApiController.apiCreateUser(this)
+                            .retryWhen(new ApiController.RetryWithDelay(10, 5000))
+                            .subscribe(configuration -> {
+                                ApiController.apiAll().subscribe(allData -> {
+                                    Snackbar.make(root, R.string.connected, Snackbar.LENGTH_SHORT).show();
+                                    navigator.setRootFragment(PagerFragment.newInstance());
+                                }, t -> {
+                                    Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
+                                            .setAction("EXIT", v1 -> finish())
+                                            .show();
+                                });
+                                //loadPager(Hue.hueConfiguration);
+                            }, throwable -> {
+                                // fall back, see if IP has changed
+                                Snackbar.make(root, R.string.failtoconnect, Snackbar.LENGTH_INDEFINITE)
+                                        .setAction(R.string.exit, v1 -> finish())
+                                        .show();
+                            });
+
+                    Snackbar.make(root, String.format(getString(R.string.foundhub), device.getHost()), Snackbar.LENGTH_INDEFINITE).show();
                 }, t -> {
                     setWait(false);
                     Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
