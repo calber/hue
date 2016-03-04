@@ -30,6 +30,9 @@ public class State {
     @Expose
     public Boolean reachable;
 
+    @Expose
+    public String scene;
+
     public State(boolean b) {
         on = b;
         if(on) bri = 254;
@@ -39,5 +42,9 @@ public class State {
     public State(int i) {
         on = true;
         bri =  128;
+    }
+
+    public State(Scene s) {
+        scene = s.id;
     }
 }

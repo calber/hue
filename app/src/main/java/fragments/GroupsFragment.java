@@ -69,8 +69,8 @@ public class GroupsFragment extends HueFragment implements HueFragment.OnItemSel
 
     }
 
-    @Subscribe
-    public void onEvent(Change event) {
+    @Subscribe()
+    public void onEventChange(Change event) {
     }
 
     @Override
