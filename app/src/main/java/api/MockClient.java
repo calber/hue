@@ -19,11 +19,7 @@ public class MockClient implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
 
-        String filename = chain.request().url().url().getFile().substring(1);
-
-        if(filename.equals("api/" + Hue.TOKEN)) {
-            filename += "-all";
-        }
+        String filename = chain.request().url().url().getFile().substring(1) + ".json";
 
         InputStream is = null;
         byte[] buffer = new byte[0];

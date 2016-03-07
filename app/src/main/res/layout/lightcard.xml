@@ -20,18 +20,11 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:weightSum="3"
+            android:weightSum="2"
             android:layout_height="wrap_content">
             <Button
                 android:id="@+id/on"
                 android:text="ON"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/button" />
-            <Button
-                android:id="@+id/half"
-                android:text="50%"
                 android:layout_weight="1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -44,6 +37,12 @@
                 android:layout_height="wrap_content"
                 style="@style/button" />
         </LinearLayout>
+        <SeekBar
+            android:max="254"
+            android:paddingTop="@dimen/defaultpadding"
+            android:id="@+id/bri"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

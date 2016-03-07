@@ -36,8 +36,7 @@ public class ApiController {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    @NonNull
-    public static Observable<AllData> apiAll() {
+
 //        return Observable.zip(Hue.api.all(Hue.TOKEN), Hue.api.scenes(Hue.TOKEN)
 //                , (alld, sash) -> {
 //                    Hue.hueConfiguration = alld;
@@ -47,6 +46,9 @@ public class ApiController {
 //                .retry(3)
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread());
+
+    @NonNull
+    public static Observable<AllData> apiAll() {
         return Hue.api.all(Hue.TOKEN)
                 .doOnNext(allData -> {
                     Hue.hueConfiguration = allData;
@@ -62,6 +64,15 @@ public class ApiController {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
+    }
+
+    @NonNull
+    public static Observable<?> apiLigthSwitch(String id, int bri) {
+        return Observable.concat(ApiBuilder.getInstance().lightSwitch(Hue.TOKEN, id, new State(bri))
+                ,apiAll())
+                .last()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @NonNull

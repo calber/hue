@@ -35,13 +35,16 @@ public class State {
 
     public State(boolean b) {
         on = b;
-        if(on) bri = 254;
+        if (on) bri = 254;
         else bri = 0;
     }
 
     public State(int i) {
-        on = true;
-        bri =  128;
+        if (i == 0)
+            on = false;
+        else
+            on = true;
+        bri = i;
     }
 
     public State(Scene s) {

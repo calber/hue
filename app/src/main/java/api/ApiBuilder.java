@@ -58,6 +58,7 @@ public class ApiBuilder {
             client = new OkHttpClient.Builder()
                     .addInterceptor(interceptor)
                     .addInterceptor(new MockClient())
+                    .addInterceptor(new PhilipsDontKnowWhatIsRest())
                     .build();
         else
             client = new OkHttpClient.Builder()
