@@ -23,6 +23,15 @@
 
         </android.support.v7.widget.Toolbar>
 
+        <RelativeLayout
+            android:padding="@dimen/defaultpadding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="Device registered on HUB, swipe to dismiss..."
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </RelativeLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
