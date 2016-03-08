@@ -117,7 +117,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
-            view.setOnClickListener(this);
+            view.setOnLongClickListener(v -> {
+                listener.onDataReady(items.get(position),position);
+                return true;
+            });
         }
 
         @Override

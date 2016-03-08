@@ -37,16 +37,13 @@ public class ApiController {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-
-//        return Observable.zip(Hue.api.all(Hue.TOKEN), Hue.api.scenes(Hue.TOKEN)
-//                , (alld, sash) -> {
-//                    Hue.hueConfiguration = alld;
-//                    Hue.hueConfiguration.appscenes = sash;
-//                    return Hue.hueConfiguration;
-//                })
-//                .retry(3)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
+    @NonNull
+    public static Observable<?> apiDeleteGroup(String id) {
+        return Observable.concat(Hue.api.deleteGroup(Hue.TOKEN, id), apiAll())
+                .last()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 
     @NonNull
     public static Observable<AllData> apiAll() {

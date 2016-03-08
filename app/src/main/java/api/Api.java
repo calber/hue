@@ -24,7 +24,6 @@ import rx.Observable;
  */
 public interface Api {
 
-
     @POST("api")
     Observable<List<ResponseObjects>> createUser(@Body RequestUser device);
 
@@ -54,5 +53,8 @@ public interface Api {
 
     @POST("api/{token}/groups")
     Observable<List<ResponseObjects>> group(@Path("token") String token, @Body Group groups);
+
+    @DELETE("/api/{token}/groups/{id}")
+    Observable<List<Response>> deleteGroup(@Path("token") String token, @Path("id") String group);
 
 }
