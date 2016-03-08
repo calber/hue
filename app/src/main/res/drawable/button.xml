@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-<item android:color="@color/colorAccent"
+<item
     android:drawable="@drawable/cornerspressed"
     android:state_pressed="true" />
-<item android:color="@color/colorPrimaryDark"
+<item
     android:drawable="@drawable/cornersactive"
     android:state_activated="true"/>
-<item android:color="@color/colorPrimaryDark"
-    android:drawable="@drawable/cornersnormal" />
+<item android:drawable="@drawable/cornersnormal" />
 </selector>

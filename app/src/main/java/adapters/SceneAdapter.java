@@ -35,7 +35,7 @@ public class SceneAdapter extends RecyclerView.Adapter<SceneAdapter.ViewHolder> 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.groupcard, parent, false);
+        View view = inflater.inflate(R.layout.scenecard, parent, false);
         return new ViewHolder(view);
     }
 

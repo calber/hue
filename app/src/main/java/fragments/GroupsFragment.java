@@ -12,15 +12,13 @@ import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
 import org.calber.hue.R;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import adapters.GroupAdapter;
-import api.ApiController;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.AllData;
 import models.Change;
-import models.Group;
-import models.State;
 
 /**
  * Created by calber on 29/2/16.
@@ -60,17 +58,11 @@ public class GroupsFragment extends HueFragment implements HueFragment.OnItemSel
 
     @Override
     public void onDataReady(Object object, int position) {
-        Group s = (Group) object;
-        Log.d(Hue.TAG, "State set to:" + s.action.on);
-
-        s.action.on = !s.action.on;
-        ApiController.apiSetScene(s.id, new State(s.action.on))
-                .subscribe(o -> Log.d(Hue.TAG, o.toString()), t -> Log.e(Hue.TAG, t.toString()));
-
     }
 
-    @Subscribe()
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventChange(Change event) {
+        loadGroups(Hue.hueConfiguration);
     }
 
     @Override

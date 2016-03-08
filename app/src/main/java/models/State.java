@@ -47,7 +47,12 @@ public class State {
         bri = i;
     }
 
-    public State(Scene s) {
+    public State(Scene s, int i) {
         scene = s.id;
+        if (i == 0)
+            on = false;
+        else
+            on = true;
+        bri = i;
     }
 }

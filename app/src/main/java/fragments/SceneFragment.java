@@ -54,7 +54,7 @@ public class SceneFragment extends HueFragment implements HueFragment.OnItemSele
     public void onDataReady(Object object, int position) {
         Scene s = (Scene) object;
 
-        ApiController.apiSetScene("0", new State(s))
+        ApiController.apiSetScene("0", new State(s,254))
                 .subscribe(o -> Log.d(Hue.TAG, o.toString()), t -> Log.e(Hue.TAG, t.toString()));
 
     }

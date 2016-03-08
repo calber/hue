@@ -1,7 +1,6 @@
 package fragments;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,7 +15,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import adapters.LightAdapter;
-import api.ApiController;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.AllData;
@@ -46,35 +44,12 @@ public class LightsFragment extends HueFragment {
         View rootView = inflater.inflate(R.layout.list, container, false);
         ButterKnife.bind(this, rootView);
 
-        listener.getFab().setOnClickListener(v ->
-                ApiController.apiSeachLigths()
-                        .subscribe(r -> searchingNewLights()
-                                , t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show()));
 
         list.setLayoutManager(new LinearLayoutManager(this.getContext()));
         loadLight(Hue.hueConfiguration);
         return rootView;
     }
 
-    private void searchingNewLights() {
-        listener.setWait(true);
-        listener.getFab().hide();
-        Snackbar.make(listener.getRootView(), "Searching for new lights", Snackbar.LENGTH_INDEFINITE)
-                .setDuration(60000)
-                .setCallback(new Snackbar.Callback() {
-                    @Override
-                    public void onDismissed(Snackbar snackbar, int event) {
-                        listener.setWait(false);
-                        listener.getFab().show();
-                        ApiController.apiAll()
-                                .subscribe(configuration -> {
-                                    loadLight(configuration);
-                                }, t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show());
-                        super.onDismissed(snackbar, event);
-                    }
-                })
-                .show();
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChangeEvent(Change event) {

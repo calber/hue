@@ -2,6 +2,7 @@ package fragments;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,10 +17,12 @@ import android.view.ViewGroup;
 import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
 import org.calber.hue.R;
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
+import api.ApiController;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.Change;
@@ -98,15 +101,27 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if (position == 0)
-            listener.getFab().show();
-        else
-            listener.getFab().hide();
+        switch (position) {
+            case 0:
+                listener.getFab().show();
+                listener.getFab().setOnClickListener(v -> ApiController.apiSeachLigths()
+                        .subscribe(r -> searchingNewLights()
+                                , t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show()));
+                break;
+            case 1:
+                listener.getFab().hide();
+                break;
+            case 2:
+                listener.getFab().hide();
+                break;
+            default:
+                listener.getFab().hide();
+                break;
+        }
     }
 
     @Override
     public void onPageSelected(int position) {
-
     }
 
     @Override
@@ -115,7 +130,27 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
     }
 
     @Subscribe
-    public void onEvent(Change event) {
+    public void onEventChange(Change event) {
+    }
+
+    private void searchingNewLights() {
+        listener.setWait(true);
+        listener.getFab().hide();
+        Snackbar.make(listener.getRootView(), "Searching for new lights", Snackbar.LENGTH_INDEFINITE)
+                .setDuration(60000)
+                .setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar snackbar, int event) {
+                        listener.setWait(false);
+                        listener.getFab().show();
+                        ApiController.apiAll()
+                                .subscribe(configuration -> EventBus.getDefault().post(new Change()),
+                                        t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show())
+                        ;
+                        super.onDismissed(snackbar, event);
+                    }
+                })
+                .show();
     }
 
 }
