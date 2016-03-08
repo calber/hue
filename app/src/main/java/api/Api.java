@@ -5,6 +5,7 @@ import java.util.List;
 
 import models.AllData;
 import models.Configuration;
+import models.Group;
 import models.RequestUser;
 import models.Response;
 import models.ResponseObjects;
@@ -50,4 +51,8 @@ public interface Api {
 
     @PUT("/api/{token}/groups/{id}/action")
     Observable<List<ResponseObjects>> setScene(@Path("token") String token, @Path("id") String id, @Body State state);
+
+    @POST("api/{token}/groups")
+    Observable<List<ResponseObjects>> group(@Path("token") String token, @Body Group groups);
+
 }

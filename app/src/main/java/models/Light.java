@@ -1,5 +1,7 @@
 package models;
 
+import android.widget.CheckBox;
+
 import com.google.gson.annotations.Expose;
 
 /**
@@ -19,5 +21,6 @@ public class Light {
 
     public Pointsymbol pointsymbol;
     public String id;
+    public CheckBox checkBox;
 
 }

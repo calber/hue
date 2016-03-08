@@ -109,7 +109,8 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
                                 , t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show()));
                 break;
             case 1:
-                listener.getFab().hide();
+                listener.getFab().show();
+                listener.getFab().setOnClickListener(v -> listener.getNavigator().goTo(NewGroupFragment.newInstance()));
                 break;
             case 2:
                 listener.getFab().hide();

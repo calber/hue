@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import models.AllData;
 import models.Change;
+import models.Group;
 import models.RequestUser;
 import models.ResponseObjects;
 import models.Scene;
@@ -67,9 +68,18 @@ public class ApiController {
     }
 
     @NonNull
+    public static Observable<List<ResponseObjects>> apiGroup(Group g) {
+        g.type = "LightGroup";
+        return Observable.zip(Hue.api.group(Hue.TOKEN, g), apiAll(), (responseObjectses, allData) -> responseObjectses)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+    }
+
+    @NonNull
     public static Observable<?> apiLigthSwitch(String id, int bri) {
         return Observable.concat(ApiBuilder.getInstance().lightSwitch(Hue.TOKEN, id, new State(bri))
-                ,apiAll())
+                , apiAll())
                 .last()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());

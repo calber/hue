@@ -16,6 +16,8 @@ public class Group {
     public List<String> lights = new ArrayList<String>();
     @Expose
     public String name;
+    @Expose
+    public String type;
 
     public boolean localstate;
     public String id;
