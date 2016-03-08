@@ -47,7 +47,6 @@ public class GroupsFragment extends HueFragment implements HueFragment.OnItemSel
         list.setLayoutManager(new LinearLayoutManager(this.getContext()));
         loadGroups(Hue.hueConfiguration);
         return rootView;
-
     }
 
     private void loadGroups(AllData configuration) {
