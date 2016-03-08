@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +55,6 @@ public class GroupsFragment extends HueFragment implements HueFragment.OnItemSel
             configuration.groups.get(l).id = l;
         }
         list.setAdapter(new GroupAdapter(getContext(), configuration.groups.values(), this));
-        Log.d(Hue.TAG, configuration.toString());
     }
 
     @Override
