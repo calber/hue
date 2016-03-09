@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
                 }, t -> {
                     setWait(false);
-                    Snackbar.make(root, R.string.nohubavailable, Snackbar.LENGTH_INDEFINITE)
+                    Snackbar.make(root, R.string.nohub, Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.exit, v -> finish())
                             .show();
 

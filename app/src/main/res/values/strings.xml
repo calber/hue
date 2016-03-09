@@ -3,6 +3,7 @@
     <string name="nohubavailable">Failed to find %1$s HUB on this network</string>
     <string name="foundhub">Found HUB: %1$s press Connect on HUB to start</string>
     <string name="failtoconnect">Failed to connect to HUB</string>
+    <string name="nohub">No HUB found on this network</string>
     <string name="scanagain">SCAN AGAIN</string>
     <string name="scan">SCAN</string>
     <string name="exit">EXIT</string>
