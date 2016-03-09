@@ -34,35 +34,7 @@
                 android:hint="lights" />
         </RelativeLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="6">
-
-            <Button
-                android:id="@+id/off"
-                android:text="OFF"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/button" />
-            <SeekBar
-                android:layout_gravity="center_vertical"
-                android:max="254"
-                android:padding="@dimen/defaultpadding"
-                android:id="@+id/bri"
-                android:layout_weight="4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-            <Button
-                android:id="@+id/on"
-                android:text="ON"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/button" />
-        </LinearLayout>
+        <include layout="@layout/seekbarwithbuttons"/>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:weightSum="6"
+    tools:showIn="@layout/lightcard">
+
+    <Button
+        android:id="@+id/off"
+        style="@style/button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="OFF" />
+
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:orientation="vertical">
+        <SeekBar
+            android:layout_centerVertical="true"
+            android:id="@+id/bri"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:max="254"
+            android:padding="@dimen/defaultpadding" />
+        <TextView
+            android:layout_marginTop="@dimen/stroke"
+            style="@style/TextAppearance.AppCompat.Caption"
+            android:hint="0"
+            android:gravity="center_horizontal"
+            android:id="@+id/brilabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/on"
+        style="@style/button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="ON" />
+</LinearLayout>
+    

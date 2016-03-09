@@ -68,6 +68,7 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
     }
 
     private void setLighButtonState(ViewHolder h, boolean state, Integer bri) {
+        h.brilabel.setText(String.format("%d",bri));
         if (bri > 0) {
             h.on.setActivated(true);
             h.off.setActivated(false);
@@ -110,6 +111,8 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.name)
         TextView name;
+        @Bind(R.id.brilabel)
+        TextView brilabel;
         @Bind(R.id.type)
         TextView type;
         @Bind(R.id.on)
