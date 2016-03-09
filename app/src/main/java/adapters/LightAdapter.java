@@ -44,8 +44,9 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder h, int position) {
-        h.name.setText(items.get(position).name);
         Light light = items.get(position);
+        h.name.setText(light.name);
+        h.type.setText(light.type);
 
         setLighButtonState(h, light.state.on, light.state.bri);
         h.bri.setProgress(light.state.bri);
@@ -109,6 +110,8 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
     class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.name)
         TextView name;
+        @Bind(R.id.type)
+        TextView type;
         @Bind(R.id.on)
         Button on;
         @Bind(R.id.off)
