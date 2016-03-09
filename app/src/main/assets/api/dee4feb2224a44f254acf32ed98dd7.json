@@ -8,7 +8,7 @@
         "reachable": true
       },
       "type": "Dimmable light",
-      "name": "Sala tavolo",
+      "name": "Living room desk",
       "modelid": "LWB004",
       "manufacturername": "Philips",
       "uniqueid": "00:17:88:01:00:f6:27:6f-0b",
@@ -36,7 +36,7 @@
         "reachable": true
       },
       "type": "Dimmable light",
-      "name": "Sala",
+      "name": "Living room sofa",
       "modelid": "LWB004",
       "manufacturername": "Philips",
       "uniqueid": "00:17:88:01:00:f5:d9:5f-0b",
@@ -45,7 +45,7 @@
   },
   "groups": {
     "1": {
-      "name": "Sala",
+      "name": "Living room",
       "lights": [
         "3",
         "1"
@@ -69,7 +69,7 @@
     }
   },
   "config": {
-    "name": "calberhue",
+    "name": "hue hub",
     "zigbeechannel": 20,
     "bridgeid": "001788FFFE13DD3B",
     "mac": "00:17:88:13:dd:3b",

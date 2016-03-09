@@ -62,7 +62,7 @@ public class ApiBuilder {
                     .build();
         else
             client = new OkHttpClient.Builder()
-                    .connectTimeout(5, TimeUnit.SECONDS)
+                    .connectTimeout(10, TimeUnit.SECONDS)
                     .writeTimeout(10, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
                     .addInterceptor(interceptor)

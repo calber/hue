@@ -182,7 +182,6 @@ public class UPnPDeviceFinder {
                     if (!addr.isLoopbackAddress()) {
                         Log.e(TAG, "IP from inet is: " + addr);
                         if (useIPv4 && addr instanceof Inet4Address) {
-                            Log.e(TAG, "IP v4");
                             return addr;
                         }
                     }

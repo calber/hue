@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         Hue.TOKEN = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("TOKEN", null);
         Hue.URL = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("URL", null);
 
-        setWait(true);
 
         if (Hue.TOKEN == null) {
             createConnection();
@@ -82,11 +81,11 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
 
     private void apiConfigurationAll() {
+        setWait(true);
         Hue.api = ApiBuilder.newInstance(Hue.URL);
-        ApiController.apiAll()
-                .subscribe(configuration -> {
-                    navigator.setRootFragment(PagerFragment.newInstance());
-                }, throwable -> {
+        ApiController.apiAll().subscribe(configuration ->
+                        navigator.setRootFragment(PagerFragment.newInstance())
+                , throwable -> {
                     setWait(false);
                     HttpException ex = null;
                     try {
@@ -96,23 +95,23 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                             case 403:
                                 createConnection();
                                 break;
-                            case 404:
-                                findConnection();
-                                break;
                             default:
-                                Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
-                                        .setAction("EXIT", v1 -> finish())
+                                Snackbar.make(root, String.format(getString(R.string.nohubavailable), Hue.URL), Snackbar.LENGTH_INDEFINITE)
+                                        .setAction(R.string.scan, v1 -> findConnection())
                                         .show();
                                 break;
                         }
                     } catch (Exception e) {
-                        findConnection();
+                        Snackbar.make(root, String.format(getString(R.string.internal),e.getMessage()), Snackbar.LENGTH_INDEFINITE)
+                                .setAction(R.string.exit, v -> finish())
+                                .show();
                     }
                 });
     }
 
 
     private void createConnection() {
+        setWait(true);
         new UPnPDeviceFinder().observe()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -124,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", Hue.URL).commit();
                     Hue.api = ApiBuilder.newInstance(Hue.URL);
 
+                    Snackbar.make(root, String.format(getString(R.string.foundhub), device.getHost()), Snackbar.LENGTH_INDEFINITE).show();
                     ApiController.apiCreateUser(this)
                             .retryWhen(new ApiController.RetryWithDelay(10, 5000))
                             .subscribe(configuration -> {
@@ -131,23 +131,20 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                                     Snackbar.make(root, R.string.connected, Snackbar.LENGTH_SHORT).show();
                                     navigator.setRootFragment(PagerFragment.newInstance());
                                 }, t -> {
-                                    Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
-                                            .setAction("EXIT", v1 -> finish())
+                                    Snackbar.make(root, R.string.failtoconnect, Snackbar.LENGTH_INDEFINITE)
+                                            .setAction(R.string.exit, v1 -> finish())
                                             .show();
                                 });
-                                //loadPager(Hue.hueConfiguration);
                             }, throwable -> {
-                                // fall back, see if IP has changed
                                 Snackbar.make(root, R.string.failtoconnect, Snackbar.LENGTH_INDEFINITE)
                                         .setAction(R.string.exit, v1 -> finish())
                                         .show();
                             });
 
-                    Snackbar.make(root, String.format(getString(R.string.foundhub), device.getHost()), Snackbar.LENGTH_INDEFINITE).show();
                 }, t -> {
                     setWait(false);
-                    Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
-                            .setAction("EXIT", v -> finish())
+                    Snackbar.make(root, R.string.nohubavailable, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.exit, v -> finish())
                             .show();
 
                 });
@@ -155,15 +152,14 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
 
     public void findConnection() {
+        setWait(true);
         new UPnPDeviceFinder().observe()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(device -> {
                     setWait(false);
 
-                    Hue.URL = String.format("%s://%s/"
-                            , device.getLocation().getProtocol()
-                            , device.getLocation().getHost());
+                    Hue.URL = String.format("%s://%s/", device.getLocation().getProtocol(), device.getLocation().getHost());
                     getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", Hue.URL).commit();
                     Hue.api = ApiBuilder.newInstance(Hue.URL);
 
@@ -172,14 +168,14 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                         Snackbar.make(root, R.string.connected, Snackbar.LENGTH_SHORT).show();
                         navigator.setRootFragment(PagerFragment.newInstance());
                     }, t -> {
-                        Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
-                                .setAction("EXIT", v1 -> finish())
+                        Snackbar.make(root, R.string.nohubavailable, Snackbar.LENGTH_INDEFINITE)
+                                .setAction(R.string.exit, v1 -> finish())
                                 .show();
                     });
                 }, t -> {
                     setWait(false);
-                    Snackbar.make(root, R.string.failednetwork, Snackbar.LENGTH_INDEFINITE)
-                            .setAction("EXIT", v -> finish())
+                    Snackbar.make(root, R.string.nohubavailable, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(R.string.exit, v -> finish())
                             .show();
                 });
     }
