@@ -6,9 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -21,7 +18,6 @@ import fragments.FragmentInteraction;
 import fragments.HueFragment;
 import fragments.Navigator;
 import fragments.PagerFragment;
-import fragments.WhitelistFragment;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -62,29 +58,10 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menudevices:
-                navigator.goTo(WhitelistFragment.newInstance("WHITELIST"));
-                break;
-        }
-        return true;
-    }
-
-
     private void apiConfigurationAll() {
         setWait(true);
         Hue.api = ApiBuilder.newInstance(Hue.URL);
-        ApiController.apiAll().subscribe(configuration ->
-                        navigator.setRootFragment(PagerFragment.newInstance())
+        ApiController.apiAll().subscribe(configuration -> navigator.setRootFragment(PagerFragment.newInstance())
                 , throwable -> {
                     setWait(false);
                     HttpException ex = null;

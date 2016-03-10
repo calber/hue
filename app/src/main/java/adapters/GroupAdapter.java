@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -48,17 +48,23 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder h, int position) {
-        h.name.setText(items.get(position).name);
-        h.lights.setText(String.format("%d lights",items.get(position).lights.size()));
+        Group g = items.get(position);
+
+        h.name.setText(g.name);
+        h.lights.setText(String.format("%d lights", g.lights.size()));
         h.position = position;
 
-        Group group = items.get(position);
-        Light light = Hue.hueConfiguration.lights.get(group.lights.get(0));
-        h.bri.setProgress(light.state.bri);
+        double avgbri = 0;
+        for(String key: g.lights) {
+            Light l =  Hue.hueConfiguration.lights.get(key);
+            avgbri += l.state.bri;
+        }
+        avgbri = avgbri/g.lights.size();
+        h.bri.setProgress((int) avgbri);
 
-        h.on.setOnClickListener(v -> setScene(group, 254));
-        h.off.setOnClickListener(v -> setScene(group, 0));
-        h.bri.setOnSeekBarChangeListener(new HueSeekBarChangeListener(items.get(position)));
+        h.on.setOnClickListener(v -> setScene(g, 254));
+        h.off.setOnClickListener(v -> setScene(g, 0));
+        h.bri.setOnSeekBarChangeListener(new HueSeekBarChangeListener(g));
 
     }
 
@@ -106,9 +112,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         @Bind(R.id.lights)
         TextView lights;
         @Bind(R.id.on)
-        Button on;
+        ImageButton on;
         @Bind(R.id.off)
-        Button off;
+        ImageButton off;
         @Bind(R.id.bri)
         SeekBar bri;
 

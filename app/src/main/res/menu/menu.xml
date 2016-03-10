@@ -5,6 +5,6 @@
     <item
         android:id="@+id/menudevices"
         app:showAsAction="always"
-        android:icon="@drawable/ic_action_action_settings_input_antenna"
+        android:icon="@drawable/ic_phone_android"
         android:title="Whitelist" />
 </menu>

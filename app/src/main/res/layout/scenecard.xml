@@ -5,6 +5,7 @@
     android:layout_margin="@dimen/padding">
 
     <LinearLayout
+        android:background="@drawable/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -12,7 +13,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/buttonwhite"
             android:orientation="horizontal"
             android:padding="@dimen/defaultpadding">
 

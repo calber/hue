@@ -84,7 +84,7 @@ public class ApiController {
 
     @NonNull
     public static Observable<List<ResponseObjects>> apiCreateUser(Context context) {
-        return Hue.api.createUser(new RequestUser("calberhue#" + Hue.androidId))
+        return Hue.api.createUser(new RequestUser("fasthue@" + Hue.androidId))
                 .doOnNext(o -> {
                     ResponseObjects response = o.get(0);
                     Hue.TOKEN = response.success.username;

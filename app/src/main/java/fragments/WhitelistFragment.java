@@ -63,6 +63,7 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
         act.getSupportActionBar().setDisplayShowCustomEnabled(false);
         act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setTitle(Hue.hueConfiguration.config.name);
+        toolbar.setNavigationOnClickListener(v -> listener.getNavigator().goOneBack());
 
         list.setLayoutManager(new LinearLayoutManager(this.getContext()));
         loadWhiteList(Hue.hueConfiguration);
@@ -78,7 +79,6 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(list);
-        toolbar.setNavigationOnClickListener(v -> listener.getNavigator().goOneBack());
 
         Log.d(Hue.TAG, configuration.toString());
     }

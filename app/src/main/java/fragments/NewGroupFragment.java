@@ -67,6 +67,7 @@ public class NewGroupFragment extends HueFragment {
         act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         listener.setWait(false);
         toolbar.setTitle("Create new group");
+        toolbar.setNavigationOnClickListener(v -> listener.getNavigator().goOneBack());
 
         save.setOnClickListener(v -> {
             if(groupname.getText().length() == 0) {

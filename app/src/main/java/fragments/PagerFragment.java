@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
@@ -40,6 +41,8 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
     TabLayout tabs;
     @Bind(R.id.fab)
     FloatingActionButton fab;
+    @Bind(R.id.whitelist)
+    ImageButton whitelist;
 
 
     private ArrayList<Fragment> fragments;
@@ -74,6 +77,11 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
         container.addOnPageChangeListener(this);
         tabs.setupWithViewPager(container);
 
+        tabs.getTabAt(0).setIcon(R.drawable.ic_lightbulb_outline);
+        tabs.getTabAt(1).setIcon(R.drawable.ic_group_work);
+        tabs.getTabAt(2).setIcon(R.drawable.ic_surround_sound);
+
+        whitelist.setOnClickListener(v -> listener.getNavigator().goTo(WhitelistFragment.newInstance("WHITELIST")));
         return rootView;
     }
 
@@ -93,6 +101,7 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
             return fragments.size();
         }
 
+
         @Override
         public CharSequence getPageTitle(int position) {
             return fragments.get(position).getArguments().getString(MainActivity.FRAGMENTTITLE);
@@ -104,12 +113,14 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
         switch (position) {
             case 0:
                 listener.getFab().show();
+                listener.getFab().setImageDrawable(getResources().getDrawable(R.drawable.ic_lightbulb_outline_white ));
                 listener.getFab().setOnClickListener(v -> ApiController.apiSeachLigths()
                         .subscribe(r -> searchingNewLights()
                                 , t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show()));
                 break;
             case 1:
                 listener.getFab().show();
+                listener.getFab().setImageDrawable(getResources().getDrawable(R.drawable.ic_group_work_white ));
                 listener.getFab().setOnClickListener(v -> listener.getNavigator().goTo(NewGroupFragment.newInstance()));
                 break;
             case 2:

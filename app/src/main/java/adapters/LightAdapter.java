@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -68,13 +68,16 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
     }
 
     private void setLighButtonState(ViewHolder h, boolean state, Integer bri) {
-        h.brilabel.setText(String.format("%d",bri));
-        if (bri > 0) {
+        h.brilabel.setText(String.format("%.0f%%",(bri/254.0) * 100.0));
+        if (bri > 250) {
             h.on.setActivated(true);
             h.off.setActivated(false);
-        } else {
+        } else if(bri < 5) {
             h.on.setActivated(false);
             h.off.setActivated(true);
+        } else {
+            h.on.setActivated(false);
+            h.off.setActivated(false);
         }
     }
 
@@ -116,9 +119,9 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
         @Bind(R.id.type)
         TextView type;
         @Bind(R.id.on)
-        Button on;
+        ImageButton on;
         @Bind(R.id.off)
-        Button off;
+        ImageButton off;
         @Bind(R.id.bri)
         SeekBar bri;
 
