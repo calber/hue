@@ -13,7 +13,9 @@ import java.util.concurrent.TimeUnit;
 import models.AllData;
 import models.Change;
 import models.Group;
+import models.Light;
 import models.RequestUser;
+import models.Response;
 import models.ResponseObjects;
 import models.Scene;
 import models.State;
@@ -40,6 +42,14 @@ public class ApiController {
     @NonNull
     public static Observable<?> apiDeleteGroup(String id) {
         return Observable.concat(Hue.api.deleteGroup(Hue.TOKEN, id), apiAll())
+                .last()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @NonNull
+    public static Observable<?> apiDeleteLight(String id) {
+        return Observable.concat(Hue.api.deleteLight(Hue.TOKEN, id), apiAll())
                 .last()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -76,6 +86,13 @@ public class ApiController {
     public static Observable<List<ResponseObjects>> apiSetGroup(Group g) {
         g.type = "LightGroup";
         return Observable.zip(Hue.api.setGroup(Hue.TOKEN, g.id, g), apiAll(), (responseObjectses, allData) -> responseObjectses)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @NonNull
+    public static Observable<List<Response>> apiSetLight(Light g) {
+        return Observable.zip(Hue.api.setLight(Hue.TOKEN, g.id, g), apiAll(), (responseObjectses, allData) -> responseObjectses)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

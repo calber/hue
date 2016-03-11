@@ -62,24 +62,26 @@ public class EditGroupFragment extends HueFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.newgroup, container, false);
+        rootView = inflater.inflate(R.layout.newgroup, container, false);
         ButterKnife.bind(this, rootView);
-
-        group = (Group) this.getArguments().get("group");
-
-        if (group != null) {
-            delete.setVisibility(View.VISIBLE);
-            delete.setOnClickListener(v -> delete());
-            groupname.setText(group.name);
-        }
 
         act = ((AppCompatActivity) getActivity());
         act.setSupportActionBar(toolbar);
         act.getSupportActionBar().setDisplayShowTitleEnabled(false);
         act.getSupportActionBar().setDisplayShowCustomEnabled(false);
         act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        listener.setWait(false);
+
+        group = (Group) this.getArguments().get("group");
         toolbar.setTitle("Create new group");
+
+        if (group != null) {
+            delete.setVisibility(View.VISIBLE);
+            delete.setOnClickListener(v -> delete());
+            groupname.setText(group.name);
+            toolbar.setTitle("Edit group");
+        }
+
+        listener.setWait(false);
         toolbar.setNavigationOnClickListener(v -> listener.getNavigator().goOneBack());
 
         save.setOnClickListener(v -> {
@@ -92,6 +94,11 @@ public class EditGroupFragment extends HueFragment {
     }
 
     private void checkAndSave() {
+
+        closeKeyboard();
+
+        if (group == null) group = new Group();
+
         if (groupname.getText().length() == 0) {
             groupnamehint.setError("Provide a name for the group");
             return;
@@ -125,7 +132,7 @@ public class EditGroupFragment extends HueFragment {
             CheckBox ck = (CheckBox) inflater.inflate(R.layout.checkbox, null);
             ck.setText(light.name);
             ck.setTag(light.id);
-            if (group.lights.contains(light.id))
+            if (group != null && group.lights.contains(light.id))
                 ck.setChecked(true);
             cklist.add(ck);
             ckgroup.addView(ck);

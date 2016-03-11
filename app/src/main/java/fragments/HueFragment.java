@@ -1,24 +1,19 @@
 package fragments;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
-import org.calber.hue.R;
 import org.greenrobot.eventbus.EventBus;
-
-import butterknife.Bind;
 
 /**
  * Created by calber on 29/2/16.
  */
 public class HueFragment extends Fragment {
 
-    @Nullable
-    @Bind(R.id.list)
-    RecyclerView list;
     protected FragmentInteraction listener;
+    protected View rootView;
 
     @Override
     public void onAttach(Context activity) {
@@ -35,6 +30,11 @@ public class HueFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         EventBus.getDefault().unregister(this);
+    }
+
+    protected void closeKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(rootView.getWindowToken(), 0);
     }
 
     public interface OnItemSelected {

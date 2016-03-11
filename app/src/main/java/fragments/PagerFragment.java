@@ -13,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import org.calber.hue.Hue;
 import org.calber.hue.MainActivity;
@@ -41,8 +40,6 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
     TabLayout tabs;
     @Bind(R.id.fab)
     FloatingActionButton fab;
-    @Bind(R.id.whitelist)
-    ImageButton whitelist;
 
 
     private ArrayList<Fragment> fragments;
@@ -72,6 +69,7 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
         fragments.add(LightsFragment.newInstance("LIGHTS"));
         fragments.add(GroupsFragment.newInstance("GROUPS"));
         fragments.add(SceneFragment.newInstance("SCENES"));
+        fragments.add(WhitelistFragment.newInstance("DEVICES"));
 
         container.setAdapter(new SectionsPagerAdapter(getChildFragmentManager()));
         container.addOnPageChangeListener(this);
@@ -80,8 +78,8 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
         tabs.getTabAt(0).setIcon(R.drawable.ic_lightbulb_outline);
         tabs.getTabAt(1).setIcon(R.drawable.ic_group_work);
         tabs.getTabAt(2).setIcon(R.drawable.ic_surround_sound);
+        tabs.getTabAt(3).setIcon(R.drawable.ic_phone_android);
 
-        whitelist.setOnClickListener(v -> listener.getNavigator().goTo(WhitelistFragment.newInstance("WHITELIST")));
         return rootView;
     }
 

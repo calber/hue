@@ -24,7 +24,7 @@ import models.Whitelist;
 /**
  * Created by calber on 28/2/16.
  */
-public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.ViewHolder> implements ItemTouchHelperAdapter {
+public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.ViewHolder>  {
 
     private final LayoutInflater inflater;
     private final HueFragment.OnItemSelected listener;
@@ -46,6 +46,7 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder h, int position) {
         PrettyTime t = new PrettyTime(Locale.getDefault());
+        h.position = position;
 
         h.name.setText(items.get(position).name);
         h.created.setText("Last used: " + t.format(items.get(position).lastuse));
@@ -57,20 +58,6 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         return items.size();
     }
 
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(items, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-        return true;
-    }
-
-    @Override
-    public void onItemDismiss(int position) {
-        listener.onDataRemoved(items.get(position),position);
-        items.remove(position);
-        notifyItemRemoved(position);
-
-    }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.name)
@@ -78,9 +65,15 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         @Bind(R.id.created)
         TextView created;
 
+        public int position;
+
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            view.setOnLongClickListener(v -> {
+                listener.onDataRemoved(items.get(position),position);
+                return true;
+            });
         }
     }
 

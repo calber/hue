@@ -9,5 +9,5 @@
     <color name="blocking">#66000000</color>
     <color name="lightorange">#fff7a4</color>
     <color name="darkOrange">#c4670e</color>
-
+    <color name="black">#000000</color>
 </resources>

@@ -2,11 +2,8 @@ package fragments;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +16,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import adapters.ItemTouchHelperCallback;
-import adapters.OnStartDragListener;
 import adapters.WhiteListAdapter;
 import api.ApiController;
 import butterknife.Bind;
@@ -32,13 +27,9 @@ import models.Whitelist;
 /**
  * Created by calber on 29/2/16.
  */
-public class WhitelistFragment extends HueFragment implements OnStartDragListener, HueFragment.OnItemSelected {
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
-
-
-    private ItemTouchHelper mItemTouchHelper;
-    private AppCompatActivity act;
+public class WhitelistFragment extends HueFragment implements HueFragment.OnItemSelected {
+    @Bind(R.id.list)
+    RecyclerView list;
 
     public WhitelistFragment() {
     }
@@ -56,15 +47,6 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
         View rootView = inflater.inflate(R.layout.devicelist, container, false);
         ButterKnife.bind(this, rootView);
 
-        act = ((AppCompatActivity) getActivity());
-
-        act.setSupportActionBar(toolbar);
-        act.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        act.getSupportActionBar().setDisplayShowCustomEnabled(false);
-        act.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setTitle(Hue.hueConfiguration.config.name);
-        toolbar.setNavigationOnClickListener(v -> listener.getNavigator().goOneBack());
-
         list.setLayoutManager(new LinearLayoutManager(this.getContext()));
         loadWhiteList(Hue.hueConfiguration);
         return rootView;
@@ -76,17 +58,10 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
         }
         WhiteListAdapter adapter = new WhiteListAdapter(this, configuration.config.whitelist.values());
         list.setAdapter(adapter);
-        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(adapter);
-        mItemTouchHelper = new ItemTouchHelper(callback);
-        mItemTouchHelper.attachToRecyclerView(list);
 
         Log.d(Hue.TAG, configuration.toString());
     }
 
-    @Override
-    public void onStartDrag(RecyclerView.ViewHolder viewHolder) {
-        mItemTouchHelper.startDrag(viewHolder);
-    }
 
     @Override
     public void onDataReady(Object object, int position) {
@@ -120,6 +95,5 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
     public void onChangeEvent(Change event) {
         loadWhiteList(Hue.hueConfiguration);
     }
-
 
 }

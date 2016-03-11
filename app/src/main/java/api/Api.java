@@ -6,6 +6,7 @@ import java.util.List;
 import models.AllData;
 import models.Configuration;
 import models.Group;
+import models.Light;
 import models.RequestUser;
 import models.Response;
 import models.ResponseObjects;
@@ -60,4 +61,9 @@ public interface Api {
     @DELETE("/api/{token}/groups/{id}")
     Observable<List<Response>> deleteGroup(@Path("token") String token, @Path("id") String group);
 
+    @DELETE("/api/{token}/lights/{id}")
+    Observable<List<Response>> deleteLight(@Path("token") String token, @Path("id") String light);
+
+    @PUT("/api/{token}/lights/{id}")
+    Observable<List<Response>> setLight(@Path("token") String token, @Path("id") String id, @Body Light light);
 }

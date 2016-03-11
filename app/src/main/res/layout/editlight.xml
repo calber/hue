@@ -46,6 +46,17 @@
                 android:hint="Light name" />
         </android.support.design.widget.TextInputLayout>
 
+        <TextView
+            style="@style/textview"
+            android:id="@+id/model"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            style="@style/textview"
+            android:id="@+id/type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <LinearLayout
             android:gravity="end"
             android:orientation="horizontal"
