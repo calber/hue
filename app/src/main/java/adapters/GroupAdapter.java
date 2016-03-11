@@ -66,6 +66,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         h.off.setOnClickListener(v -> setScene(g, 0));
         h.bri.setOnSeekBarChangeListener(new HueSeekBarChangeListener(g));
 
+        setGroupButtonState(h, (int) avgbri);
     }
 
     private static void setScene(Group s, int bri) {
@@ -98,6 +99,19 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.ViewHolder> 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
             setScene(group,globalProgress);
+        }
+    }
+
+    private void setGroupButtonState(ViewHolder h, Integer bri) {
+        if (bri > 250) {
+            h.on.setActivated(true);
+            h.off.setActivated(false);
+        } else if(bri < 5) {
+            h.on.setActivated(false);
+            h.off.setActivated(true);
+        } else {
+            h.on.setActivated(false);
+            h.off.setActivated(false);
         }
     }
 

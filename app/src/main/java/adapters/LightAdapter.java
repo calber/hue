@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -20,6 +21,7 @@ import java.util.List;
 import api.ApiController;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import fragments.HueFragment;
 import models.Light;
 import rx.Subscription;
 
@@ -29,11 +31,13 @@ import rx.Subscription;
 public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> {
 
     private final LayoutInflater inflater;
+    private final HueFragment.OnItemSelected listener;
     private List<Light> items = new ArrayList<>();
 
-    public LightAdapter(Context context, Collection<Light> items) {
+    public LightAdapter(Context context, Collection<Light> items, HueFragment.OnItemSelected listener) {
         inflater = LayoutInflater.from(context);
         this.items = new ArrayList(items);
+        this.listener = listener;
     }
 
     @Override
@@ -47,12 +51,20 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
         Light light = items.get(position);
         h.name.setText(light.name);
         h.type.setText(light.type);
+        h.position = position;
 
         setLighButtonState(h, light.state.on, light.state.bri);
         h.bri.setProgress(light.state.bri);
+        if (light.state.reachable) {
+            h.notconnected.setVisibility(View.GONE);
+        } else {
+            h.notconnected.setOnClickListener(v -> listener.onDataReady(items.get(position), position));
+            h.notconnected.setVisibility(View.VISIBLE);
+        }
 
-        h.on.setOnClickListener(v -> lightSwitch(light,254));
-        h.off.setOnClickListener(v -> lightSwitch(light,0));
+
+        h.on.setOnClickListener(v -> lightSwitch(light, 254));
+        h.off.setOnClickListener(v -> lightSwitch(light, 0));
         h.bri.setOnSeekBarChangeListener(new HueSeekBarChangeListener(light));
     }
 
@@ -68,11 +80,11 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
     }
 
     private void setLighButtonState(ViewHolder h, boolean state, Integer bri) {
-        h.brilabel.setText(String.format("%.0f%%",(bri/254.0) * 100.0));
+        h.brilabel.setText(String.format("%.0f%%", (bri / 254.0) * 100.0));
         if (bri > 250) {
             h.on.setActivated(true);
             h.off.setActivated(false);
-        } else if(bri < 5) {
+        } else if (bri < 5) {
             h.on.setActivated(false);
             h.off.setActivated(true);
         } else {
@@ -107,7 +119,7 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-            lightSwitch(light,globalProgress);
+            lightSwitch(light, globalProgress);
         }
     }
 
@@ -124,10 +136,18 @@ public class LightAdapter extends RecyclerView.Adapter<LightAdapter.ViewHolder> 
         ImageButton off;
         @Bind(R.id.bri)
         SeekBar bri;
+        @Bind(R.id.notconnected)
+        ImageView notconnected;
+
+        public int position;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            view.setOnLongClickListener(v -> {
+                listener.onDataReady(items.get(position), position);
+                return true;
+            });
         }
     }
 

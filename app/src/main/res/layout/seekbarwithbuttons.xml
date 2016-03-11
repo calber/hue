@@ -6,13 +6,6 @@
     android:layout_height="wrap_content"
     tools:showIn="@layout/lightcard">
 
-    <ImageButton
-        android:layout_centerVertical="true"
-        android:id="@+id/off"
-        style="@style/circlebutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -31,6 +24,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>
+
+    <ImageButton
+        android:layout_centerVertical="true"
+        android:id="@+id/off"
+        style="@style/circlebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 
     <ImageButton
         android:layout_centerVertical="true"
