@@ -1,6 +1,10 @@
 package org.calber.hue;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import api.ApiBuilder;
 import api.ApiController;
@@ -26,6 +32,7 @@ import upnp.UPnPDeviceFinder;
 public class MainActivity extends AppCompatActivity implements FragmentInteraction {
 
     public static final String FRAGMENTTITLE = "title";
+    public static final int REQUESTPERMISSION = 1;
 
     @Bind(R.id.wait)
     View wait;
@@ -35,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
     private ArrayList<HueFragment> fragments;
     private Navigator navigator;
+    private boolean canstart = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +58,17 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
         Hue.TOKEN = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("TOKEN", null);
         Hue.URL = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("URL", null);
 
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            canstart = hasPermissionInManifest(this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(!canstart) return;
 
         if (Hue.TOKEN == null) {
             createConnection();
@@ -67,12 +86,13 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                     HttpException ex = null;
                     try {
                         ex = (HttpException) throwable;
-                        // fall back, see if IP has changed
                         switch (ex.code()) {
                             case 403:
+                                // device rejected, re register
                                 createConnection();
                                 break;
                             default:
+                                // fall back, see if IP has changed
                                 Snackbar.make(root, String.format(getString(R.string.nohubavailable), Hue.URL), Snackbar.LENGTH_INDEFINITE)
                                         .setAction(R.string.scan, v1 -> findConnection())
                                         .show();
@@ -86,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                 });
     }
 
+    /*
+    register user
+     */
 
     private void createConnection() {
         setWait(true);
@@ -127,6 +150,9 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                 });
     }
 
+    /*
+    assume user is registered only scan for IP change
+     */
 
     public void findConnection() {
         setWait(true);
@@ -145,17 +171,56 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                         Snackbar.make(root, R.string.connected, Snackbar.LENGTH_SHORT).show();
                         navigator.setRootFragment(PagerFragment.newInstance());
                     }, t -> {
+                        // user is rejected, forget and restart
                         Snackbar.make(root, R.string.nohubavailable, Snackbar.LENGTH_INDEFINITE)
-                                .setAction(R.string.exit, v1 -> finish())
+                                .setAction(R.string.scanagain, v1 -> createConnection())
                                 .show();
                     });
                 }, t -> {
+                    // No hub found!!
                     setWait(false);
                     Snackbar.make(root, R.string.nohubavailable, Snackbar.LENGTH_INDEFINITE)
                             .setAction(R.string.exit, v -> finish())
                             .show();
                 });
     }
+
+
+    @TargetApi(Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        boolean flag = true;
+        for (int c : grantResults) {
+            if (c < 0) flag = false;
+        }
+        canstart = flag;
+        onResume();
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public boolean hasPermissionInManifest(Context context) {
+        boolean flag = true;
+
+        List<String> deniedPermission = new ArrayList<>();
+        final String packageName = context.getPackageName();
+        try {
+            final PackageInfo packageInfo = context.getPackageManager().getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
+            final List<String> declaredPermisisons = Arrays.asList(packageInfo.requestedPermissions);
+            for (String p : declaredPermisisons) {
+                if (checkSelfPermission(p) != PackageManager.PERMISSION_GRANTED) {
+                    deniedPermission.add(p);
+                }
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+        if (!deniedPermission.isEmpty()) {
+            requestPermissions(deniedPermission.toArray(new String[deniedPermission.size()]), MainActivity.REQUESTPERMISSION);
+            flag = false;
+        }
+        return flag;
+    }
+
 
     @Override
     public View getRootView() {
