@@ -97,7 +97,7 @@ public class WhitelistFragment extends HueFragment implements OnStartDragListene
     public void onDataRemoved(Object object, int position) {
         Whitelist w = (Whitelist) object;
         Snackbar.make(listener.getRootView(), "Device removed", Snackbar.LENGTH_LONG)
-                .setAction("CANCEL", v -> loadWhiteList(Hue.hueConfiguration))
+                .setAction("UNDO", v -> loadWhiteList(Hue.hueConfiguration))
                 .setCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {

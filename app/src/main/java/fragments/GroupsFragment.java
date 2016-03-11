@@ -1,7 +1,6 @@
 package fragments;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import adapters.GroupAdapter;
-import api.ApiController;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import models.AllData;
@@ -59,12 +57,7 @@ public class GroupsFragment extends HueFragment implements HueFragment.OnItemSel
     @Override
     public void onDataReady(Object object, int position) {
         Group g = (Group) object;
-        Snackbar.make(listener.getRootView(),String.format("Delete group %s",g.name),Snackbar.LENGTH_INDEFINITE)
-                .setAction("Delete",v -> {
-                    ApiController.apiDeleteGroup(g.id)
-                            .subscribe(o -> Snackbar.make(listener.getRootView(),"Deleted!",Snackbar.LENGTH_SHORT).show(),
-                                    throwable -> Snackbar.make(listener.getRootView(),"Failed",Snackbar.LENGTH_SHORT).show());
-                }).show();
+        listener.getNavigator().goTo(EditGroupFragment.newInstance(g));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

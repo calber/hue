@@ -30,6 +30,7 @@
     </style>
 
     <style name="button">
+        <item name="android:textColor">@color/black</item>
         <item name="android:layout_margin">@dimen/cornerradius</item>
         <item name="android:padding">@dimen/cornerradius</item>
         <item name="android:textStyle">bold</item>

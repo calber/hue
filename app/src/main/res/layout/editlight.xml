@@ -46,12 +46,26 @@
                 android:hint="Light name" />
         </android.support.design.widget.TextInputLayout>
 
-        <Button
-            android:id="@+id/save"
-            android:layout_gravity="bottom|end"
-            style="@style/button"
-            android:text="Save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:gravity="end"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/save"
+                style="@style/button"
+                android:text="Save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_save" />
+            <Button
+                android:visibility="gone"
+                android:id="@+id/delete"
+                style="@style/button"
+                android:text="Delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_delete" />
+        </LinearLayout>
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

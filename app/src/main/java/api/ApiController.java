@@ -70,7 +70,14 @@ public class ApiController {
         return Observable.zip(Hue.api.group(Hue.TOKEN, g), apiAll(), (responseObjectses, allData) -> responseObjectses)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
 
+    @NonNull
+    public static Observable<List<ResponseObjects>> apiSetGroup(Group g) {
+        g.type = "LightGroup";
+        return Observable.zip(Hue.api.setGroup(Hue.TOKEN, g.id, g), apiAll(), (responseObjectses, allData) -> responseObjectses)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @NonNull

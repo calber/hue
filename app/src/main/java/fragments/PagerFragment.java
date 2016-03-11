@@ -121,7 +121,7 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
             case 1:
                 listener.getFab().show();
                 listener.getFab().setImageDrawable(getResources().getDrawable(R.drawable.ic_group_work_white ));
-                listener.getFab().setOnClickListener(v -> listener.getNavigator().goTo(NewGroupFragment.newInstance()));
+                listener.getFab().setOnClickListener(v -> listener.getNavigator().goTo(EditGroupFragment.newInstance(null)));
                 break;
             case 2:
                 listener.getFab().hide();

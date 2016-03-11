@@ -1,6 +1,5 @@
 package fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -45,15 +44,11 @@ public class EditLightFragment extends HueFragment {
     }
 
     @Override
-    public void onAttach(Context activity) {
-        super.onAttach(activity);
-        light = (Light) this.getArguments().get("light");
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.editlight, container, false);
         ButterKnife.bind(this, rootView);
+
+        light = (Light) this.getArguments().get("light");
 
         act = ((AppCompatActivity) getActivity());
 
