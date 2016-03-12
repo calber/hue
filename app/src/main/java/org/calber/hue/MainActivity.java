@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
                         switch (ex.code()) {
                             case 403:
                                 // device rejected, re register
+                                Snackbar.make(root, R.string.pressconnect, Snackbar.LENGTH_INDEFINITE).show();
                                 createConnection();
                                 break;
                             default:

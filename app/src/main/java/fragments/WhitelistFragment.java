@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 import models.AllData;
 import models.Change;
 import models.Whitelist;
+import retrofit2.adapter.rxjava.HttpException;
 
 /**
  * Created by calber on 29/2/16.
@@ -79,10 +80,18 @@ public class WhitelistFragment extends HueFragment implements HueFragment.OnItem
                         super.onDismissed(snackbar, event);
                         if (event == DISMISS_EVENT_TIMEOUT)
                             ApiController.apiDeleteUser(w).subscribe(
-                                    r -> {
-                                        EventBus.getDefault().post(new Change());
-                                    },
+                                    r -> EventBus.getDefault().post(new Change()),
                                     t -> {
+                                        try {
+                                            HttpException ex = (HttpException) t;
+                                            switch (ex.code()) {
+                                                case 403:
+                                                    Snackbar.make(listener.getRootView(), "App not authorized", Snackbar.LENGTH_INDEFINITE)
+                                                            .setAction("EXIT",v -> getActivity().finish())
+                                                            .show();
+                                                    return;
+                                            }
+                                        } catch (Exception e) {}
                                         Snackbar.make(listener.getRootView(), "Failed to delete", Snackbar.LENGTH_LONG).show();
                                         EventBus.getDefault().post(new Change());
                                     });

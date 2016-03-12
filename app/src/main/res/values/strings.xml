@@ -9,4 +9,5 @@
     <string name="exit">EXIT</string>
     <string name="connected">Hub Connected</string>
     <string name="internal">"Internal error: %1$s"</string>
+    <string name="pressconnect">Found HUB pres connect to start</string>
 </resources>
