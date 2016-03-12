@@ -11,7 +11,7 @@ android {
         applicationId "org.calber.hue"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 16
+        versionCode 17
         versionName "1.0"
     }
 
