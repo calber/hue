@@ -36,3 +36,4 @@ captures/
 gradle.properties
 gradlew
 gradlew.bat
+gradle/wrapper
