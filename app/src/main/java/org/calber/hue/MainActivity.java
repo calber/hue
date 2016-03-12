@@ -52,8 +52,10 @@ public class MainActivity extends AppCompatActivity implements FragmentInteracti
 
         navigator = new Navigator(getSupportFragmentManager(), R.id.root);
 
-//        getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", "http://10.0.0.12/").commit();
-//        getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("TOKEN", "dee4feb2224a44f254acf32ed98dd7").commit();
+        if(BuildConfig.BUILD_TYPE.equals("nonetwork")) {
+            getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("URL", "http://10.0.0.12/").commit();
+            getSharedPreferences("Hue", Context.MODE_PRIVATE).edit().putString("TOKEN", "dee4feb2224a44f254acf32ed98dd7").commit();
+        }
 
         Hue.TOKEN = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("TOKEN", null);
         Hue.URL = getSharedPreferences("Hue", Context.MODE_PRIVATE).getString("URL", null);
