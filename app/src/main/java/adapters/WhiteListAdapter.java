@@ -4,8 +4,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.calber.hue.Hue;
 import org.calber.hue.R;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -48,8 +50,12 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         PrettyTime t = new PrettyTime(Locale.getDefault());
         h.position = position;
 
-        h.name.setText(items.get(position).name);
-        h.created.setText("Last used: " + t.format(items.get(position).lastuse));
+        Whitelist whitelist = items.get(position);
+
+        if(whitelist.id.equals(Hue.TOKEN)) h.check.setVisibility(View.VISIBLE);
+        else h.check.setVisibility(View.GONE);
+        h.name.setText(whitelist.name);
+        h.created.setText("Last used: " + t.format(whitelist.lastuse));
     }
 
 
@@ -64,6 +70,8 @@ public class WhiteListAdapter extends RecyclerView.Adapter<WhiteListAdapter.View
         TextView name;
         @Bind(R.id.created)
         TextView created;
+        @Bind(R.id.check)
+        ImageView check;
 
         public int position;
 
