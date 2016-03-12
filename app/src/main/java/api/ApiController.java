@@ -15,7 +15,6 @@ import models.Change;
 import models.Group;
 import models.Light;
 import models.RequestUser;
-import models.Response;
 import models.ResponseObjects;
 import models.Scene;
 import models.State;
@@ -85,14 +84,16 @@ public class ApiController {
     @NonNull
     public static Observable<List<ResponseObjects>> apiSetGroup(Group g) {
         g.type = "LightGroup";
-        return Observable.zip(Hue.api.setGroup(Hue.TOKEN, g.id, g), apiAll(), (responseObjectses, allData) -> responseObjectses)
+        return Observable.zip(Hue.api.createGroup(Hue.TOKEN, g), apiAll(), (responseObjectses, allData) -> responseObjectses)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     @NonNull
-    public static Observable<List<Response>> apiSetLight(Light g) {
-        return Observable.zip(Hue.api.setLight(Hue.TOKEN, g.id, g), apiAll(), (responseObjectses, allData) -> responseObjectses)
+    public static Observable<List<ResponseObjects>> apiSetLight(Light g) {
+        Light l = new Light();
+        l.name = g.name;
+        return Observable.zip(Hue.api.setLight(Hue.TOKEN, g.id, l), apiAll(), (responseObjectses, allData) -> responseObjectses)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

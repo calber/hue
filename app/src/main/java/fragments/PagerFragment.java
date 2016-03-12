@@ -111,14 +111,14 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
         switch (position) {
             case 0:
                 listener.getFab().show();
-                listener.getFab().setImageDrawable(getResources().getDrawable(R.drawable.ic_lightbulb_outline_white ));
+                listener.getFab().setImageDrawable(getResources().getDrawable(R.drawable.ic_lightbulb_outline_white));
                 listener.getFab().setOnClickListener(v -> ApiController.apiSeachLigths()
                         .subscribe(r -> searchingNewLights()
                                 , t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show()));
                 break;
             case 1:
                 listener.getFab().show();
-                listener.getFab().setImageDrawable(getResources().getDrawable(R.drawable.ic_group_work_white ));
+                listener.getFab().setImageDrawable(getResources().getDrawable(R.drawable.ic_group_work_white));
                 listener.getFab().setOnClickListener(v -> listener.getNavigator().goTo(EditGroupFragment.newInstance(null)));
                 break;
             case 2:
@@ -144,23 +144,27 @@ public class PagerFragment extends HueFragment implements ViewPager.OnPageChange
     }
 
     private void searchingNewLights() {
-        listener.setWait(true);
         listener.getFab().hide();
-        Snackbar.make(listener.getRootView(), "Searching for new lights", Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(listener.getRootView(), "Searching for new lights, wait 1 minute", Snackbar.LENGTH_INDEFINITE)
                 .setDuration(60000)
                 .setCallback(new Snackbar.Callback() {
                     @Override
                     public void onDismissed(Snackbar snackbar, int event) {
-                        listener.setWait(false);
-                        listener.getFab().show();
-                        ApiController.apiAll()
-                                .subscribe(configuration -> EventBus.getDefault().post(new Change()),
-                                        t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show())
-                        ;
+                        refresh();
                         super.onDismissed(snackbar, event);
                     }
                 })
+                .setAction("STOP", v -> refresh()
+                )
                 .show();
+    }
+
+    private void refresh() {
+        listener.getFab().show();
+        ApiController.apiAll()
+                .subscribe(configuration -> EventBus.getDefault().post(new Change()),
+                        t -> Snackbar.make(listener.getRootView(), "Failed", Snackbar.LENGTH_LONG).show())
+        ;
     }
 
 }

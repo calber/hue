@@ -52,8 +52,8 @@ public interface Api {
     @PUT("/api/{token}/groups/{id}/action")
     Observable<List<ResponseObjects>> setScene(@Path("token") String token, @Path("id") String id, @Body State state);
 
-    @PUT("/api/{token}/groups/{id}")
-    Observable<List<ResponseObjects>> setGroup(@Path("token") String token, @Path("id") String id, @Body Group group);
+    @POST("/api/{token}/groups")
+    Observable<List<ResponseObjects>> createGroup(@Path("token") String token, @Body Group group);
 
     @POST("api/{token}/groups")
     Observable<List<ResponseObjects>> group(@Path("token") String token, @Body Group groups);
@@ -65,5 +65,5 @@ public interface Api {
     Observable<List<Response>> deleteLight(@Path("token") String token, @Path("id") String light);
 
     @PUT("/api/{token}/lights/{id}")
-    Observable<List<Response>> setLight(@Path("token") String token, @Path("id") String id, @Body Light light);
+    Observable<List<ResponseObjects>> setLight(@Path("token") String token, @Path("id") String id, @Body Light light);
 }
